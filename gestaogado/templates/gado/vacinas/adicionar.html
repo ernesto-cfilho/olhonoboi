@@ -1,0 +1,128 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Adicionar Vacina{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="text-primary">
+                <i class="fas fa-plus-circle me-2"></i>Adicionar Nova Vacina
+            </h2>
+            <a href="{% url 'lista_vacinas' %}" class="btn btn-secondary">
+                <i class="fas fa-arrow-left me-2"></i>Voltar à Lista
+            </a>
+        </div>
+        
+        <!-- Mensagens -->
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    <i class="fas fa-info-circle me-2"></i>{{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+        
+        <div class="card shadow">
+            <div class="card-header bg-success text-white">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-syringe me-2"></i>Dados da Vacina
+                </h5>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="mb-3">
+                                <label for="nome" class="form-label">
+                                    <i class="fas fa-syringe me-2"></i>Nome da Vacina
+                                </label>
+                                <input type="text" class="form-control form-control-lg" id="nome" 
+                                       name="nome" required placeholder="Ex: Vacina contra Febre Aftosa">
+                                <small class="form-text text-muted">
+                                    Digite o nome completo da vacina
+                                </small>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="validade_dias" class="form-label">
+                                    <i class="fas fa-calendar-check me-2"></i>Validade (dias)
+                                </label>
+                                <input type="number" class="form-control form-control-lg" id="validade_dias" 
+                                       name="validade_dias" required placeholder="365" min="1">
+                                <small class="form-text text-muted">
+                                    Quantos dias a vacina é válida
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <div class="alert alert-info">
+                                <i class="fas fa-info-circle me-2"></i>
+                                <strong>Dica:</strong> Após cadastrar a vacina, você poderá aplicá-la nos animais 
+                                através do menu "Vacinações".
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="text-end mt-4">
+                        <button type="button" class="btn btn-secondary me-2" onclick="history.back()">
+                            <i class="fas fa-times me-2"></i>Cancelar
+                        </button>
+                        <button type="submit" class="btn btn-success btn-lg">
+                            <i class="fas fa-save me-2"></i>Salvar Vacina
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <!-- Info Card -->
+        <div class="row mt-4">
+            <div class="col-md-6">
+                <div class="card border-info">
+                    <div class="card-header bg-info text-white">
+                        <h6 class="mb-0">
+                            <i class="fas fa-lightbulb me-2"></i>Exemplos de Vacinas Comuns
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled mb-0">
+                            <li><i class="fas fa-syringe me-2 text-success"></i>Febre Aftosa - 180 dias</li>
+                            <li><i class="fas fa-syringe me-2 text-success"></i>Brucelose - 365 dias</li>
+                            <li><i class="fas fa-syringe me-2 text-success"></i>Carbúnculo - 365 dias</li>
+                            <li><i class="fas fa-syringe me-2 text-success"></i>Raiva - 365 dias</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card border-warning">
+                    <div class="card-header bg-warning text-dark">
+                        <h6 class="mb-0">
+                            <i class="fas fa-user-circle me-2"></i>Informações do Usuário
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <p class="mb-1"><strong>Usuário:</strong> {{ user.username }}</p>
+                        <p class="mb-1"><strong>Tipo:</strong> 
+                            {% if user.is_staff %}
+                                <span class="badge bg-success">Administrador</span>
+                            {% else %}
+                                <span class="badge bg-primary">Usuário</span>
+                            {% endif %}
+                        </p>
+                        <p class="mb-0"><strong>Data/Hora:</strong> {{ "now"|date:"d/m/Y H:i" }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

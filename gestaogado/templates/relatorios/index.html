@@ -1,0 +1,249 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Relatórios - Olho no Gado{% endblock %}
+
+{% block content %}
+<!-- Header Section -->
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="text-primary">
+                <i class="fas fa-chart-bar me-3"></i>
+                Central de Relatórios
+            </h1>
+            <div class="btn-group" role="group">
+                <button type="button" class="btn btn-outline-primary">
+                    <i class="fas fa-download me-2"></i>Exportar Dados
+                </button>
+                <button type="button" class="btn btn-outline-success">
+                    <i class="fas fa-print me-2"></i>Imprimir
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Report Types Cards -->
+<div class="row g-4 mb-5">
+    <div class="col-md-6">
+        <div class="card h-100 shadow-sm border-0 report-card">
+            <div class="card-header bg-gradient-primary text-white">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-calendar-alt me-2"></i>
+                    Relatório Mensal
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row align-items-center">
+                    <div class="col-8">
+                        <p class="card-text">Visualize dados detalhados do mês atual, incluindo:</p>
+                        <ul class="list-unstyled">
+                            <li><i class="fas fa-check text-success me-2"></i>Rebanho e vacinações</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Movimentação de estoque</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Custos e receitas</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Performance geral</li>
+                        </ul>
+                    </div>
+                    <div class="col-4 text-center">
+                        <i class="fas fa-chart-line fa-4x text-primary opacity-75"></i>
+                    </div>
+                </div>
+                <div class="d-grid">
+                    <a href="{% url 'relatorio_mensal' %}" class="btn btn-primary btn-lg">
+                        <i class="fas fa-eye me-2"></i>Visualizar Relatório
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card h-100 shadow-sm border-0 report-card">
+            <div class="card-header bg-gradient-success text-white">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-chart-pie me-2"></i>
+                    Relatório Anual
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row align-items-center">
+                    <div class="col-8">
+                        <p class="card-text">Análise completa do desempenho anual com:</p>
+                        <ul class="list-unstyled">
+                            <li><i class="fas fa-check text-success me-2"></i>Crescimento do rebanho</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Balanço financeiro</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Produtividade</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Tendência de mercado</li>
+                        </ul>
+                    </div>
+                    <div class="col-4 text-center">
+                        <i class="fas fa-chart-area fa-4x text-success opacity-75"></i>
+                    </div>
+                </div>
+                <div class="d-grid">
+                    <a href="{% url 'relatorio_anual' %}" class="btn btn-success btn-lg">
+                        <i class="fas fa-eye me-2"></i>Visualizar Relatório
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Stats Section -->
+<div class="row mb-4">
+    <div class="col-12">
+        <h3 class="mb-3">
+            <i class="fas fa-tachometer-alt me-2 text-info"></i>
+            Indicadores Rápidos
+        </h3>
+    </div>
+</div>
+
+<div class="row g-4 mb-5">
+    <div class="col-md-3">
+        <div class="card bg-gradient-info text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h6 class="card-title">Animais Este Mês</h6>
+                        <h2 class="mb-0">0</h2>
+                        <small><i class="fas fa-arrow-up"></i> +0% vs mês anterior</small>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="fas fa-cow fa-2x opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3">
+        <div class="card bg-gradient-warning text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h6 class="card-title">Vacinações</h6>
+                        <h2 class="mb-0">0</h2>
+                        <small><i class="fas fa-syringe me-1"></i>Realizadas</small>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="fas fa-shield-alt fa-2x opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3">
+        <div class="card bg-gradient-danger text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h6 class="card-title">Gastos do Mês</h6>
+                        <h2 class="mb-0">R$ 0</h2>
+                        <small><i class="fas fa-dollar-sign me-1"></i>Total investido</small>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="fas fa-money-bill-wave fa-2x opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3">
+        <div class="card bg-gradient-dark text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h6 class="card-title">Produtividade</h6>
+                        <h2 class="mb-0">0%</h2>
+                        <small><i class="fas fa-chart-line me-1"></i>Meta mensal</small>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="fas fa-target fa-2x opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Reports Section -->
+<div class="row">
+    <div class="col-12">
+        <div class="card shadow">
+            <div class="card-header bg-dark text-white">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-history me-2"></i>
+                    Relatórios Recentes
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                <th><i class="fas fa-file-alt me-2"></i>Relatório</th>
+                                <th><i class="fas fa-calendar me-2"></i>Data de Geração</th>
+                                <th><i class="fas fa-user me-2"></i>Gerado por</th>
+                                <th><i class="fas fa-download me-2"></i>Status</th>
+                                <th><i class="fas fa-cogs me-2"></i>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td colspan="5" class="text-center py-4">
+                                    <i class="fas fa-file-excel fa-3x text-muted mb-3"></i>
+                                    <h6 class="text-muted">Nenhum relatório gerado ainda</h6>
+                                    <p class="text-muted">Os relatórios aparecerão aqui após serem gerados.</p>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Custom Styles for Reports -->
+<style>
+.bg-gradient-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.bg-gradient-success {
+    background: linear-gradient(135deg, #2af598 0%, #009efd 100%);
+}
+
+.bg-gradient-info {
+    background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+}
+
+.bg-gradient-warning {
+    background: linear-gradient(135deg, #fdcb6e 0%, #e17055 100%);
+}
+
+.bg-gradient-danger {
+    background: linear-gradient(135deg, #fd79a8 0%, #e84393 100%);
+}
+
+.bg-gradient-dark {
+    background: linear-gradient(135deg, #636e72 0%, #2d3436 100%);
+}
+
+.report-card:hover {
+    transform: translateY(-5px);
+    transition: transform 0.3s ease;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+}
+
+.card {
+    transition: all 0.3s ease;
+}
+</style>
+
+{% endblock %}

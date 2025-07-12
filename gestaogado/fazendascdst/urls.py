@@ -1,0 +1,20 @@
+from django.urls import path
+from . import views
+
+urlpatterns = [
+    path('', views.index, name='index'),
+    path('fazendas/', views.lista_fazendas, name='lista_fazendas'),
+    path('fazendas/adicionar/', views.adicionar_fazenda, name='adicionar_fazenda'),
+    path('fazendas/deletar/<int:fazenda_id>/', views.deletar_fazenda, name='deletar_fazenda'),
+    
+    # URLs para administradores
+    path('fazendas/admin/deletadas/', views.lista_fazendas_deletadas, name='lista_fazendas_deletadas'),
+    path('fazendas/admin/restaurar/<int:fazenda_id>/', views.restaurar_fazenda, name='restaurar_fazenda'),
+    path('fazendas/admin/deletar-permanente/<int:fazenda_id>/', views.deletar_fazenda_permanente, name='deletar_fazenda_permanente'),
+    
+    # URLs para lotes
+    path('lotes/', views.lista_piquetes, name='lista_piquetes'),
+    path('lotes/adicionar/', views.adicionar_piquete, name='adicionar_piquete'),
+    path('lotes/editar/<int:piquete_id>/', views.editar_piquete, name='editar_piquete'),
+    path('lotes/deletar/<int:piquete_id>/', views.deletar_piquete, name='deletar_piquete'),
+]

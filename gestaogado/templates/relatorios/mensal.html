@@ -1,0 +1,292 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Relatório Mensal{% endblock %}
+
+{% block content %}
+<!-- Header with Date Selector -->
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h1 class="text-primary">
+                    <i class="fas fa-calendar-alt me-3"></i>
+                    Relatório Mensal
+                </h1>
+                <p class="text-muted mb-0">Período: {% now "F Y" %}</p>
+            </div>
+            <div class="btn-group" role="group">
+                <button type="button" class="btn btn-outline-secondary">
+                    <i class="fas fa-chevron-left me-1"></i>Mês Anterior
+                </button>
+                <button type="button" class="btn btn-outline-primary">
+                    <i class="fas fa-calendar me-2"></i>Selecionar Período
+                </button>
+                <button type="button" class="btn btn-outline-secondary">
+                    Próximo Mês<i class="fas fa-chevron-right ms-1"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Summary Cards -->
+<div class="row g-4 mb-5">
+    <div class="col-lg-3 col-md-6">
+        <div class="card bg-primary text-white h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h6 class="card-title">Rebanho Total</h6>
+                        <h2 class="mb-0">0</h2>
+                        <small><i class="fas fa-arrow-up me-1"></i>+0 este mês</small>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="fas fa-cow fa-3x opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-3 col-md-6">
+        <div class="card bg-success text-white h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h6 class="card-title">Vacinações</h6>
+                        <h2 class="mb-0">0</h2>
+                        <small><i class="fas fa-syringe me-1"></i>Realizadas</small>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="fas fa-shield-alt fa-3x opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-3 col-md-6">
+        <div class="card bg-warning text-white h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h6 class="card-title">Investimentos</h6>
+                        <h2 class="mb-0">R$ 0</h2>
+                        <small><i class="fas fa-money-bill-wave me-1"></i>Total gasto</small>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="fas fa-dollar-sign fa-3x opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-3 col-md-6">
+        <div class="card bg-info text-white h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h6 class="card-title">Eficiência</h6>
+                        <h2 class="mb-0">0%</h2>
+                        <small><i class="fas fa-chart-line me-1"></i>vs Meta</small>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="fas fa-target fa-3x opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Charts Row -->
+<div class="row g-4 mb-5">
+    <div class="col-lg-8">
+        <div class="card shadow h-100">
+            <div class="card-header bg-primary text-white">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-chart-line me-2"></i>
+                    Evolução do Rebanho - Últimos 6 Meses
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="chart-container" style="height: 300px;">
+                    <div class="d-flex align-items-center justify-content-center h-100">
+                        <div class="text-center">
+                            <i class="fas fa-chart-line fa-3x text-muted mb-3"></i>
+                            <h6 class="text-muted">Gráfico de Evolução</h6>
+                            <p class="text-muted">Os dados serão exibidos aqui conforme você adiciona animais.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-4">
+        <div class="card shadow h-100">
+            <div class="card-header bg-success text-white">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-chart-pie me-2"></i>
+                    Distribuição de Gastos
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="chart-container" style="height: 300px;">
+                    <div class="d-flex align-items-center justify-content-center h-100">
+                        <div class="text-center">
+                            <i class="fas fa-chart-pie fa-3x text-muted mb-3"></i>
+                            <h6 class="text-muted">Gráfico de Pizza</h6>
+                            <p class="text-muted">Distribuição de gastos por categoria.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Detailed Tables -->
+<div class="row g-4 mb-5">
+    <div class="col-lg-6">
+        <div class="card shadow">
+            <div class="card-header bg-dark text-white">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-cow me-2"></i>
+                    Animais Adicionados Este Mês
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Identificador</th>
+                                <th>Data de Entrada</th>
+                                <th>Peso (kg)</th>
+                                <th>Fazenda</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td colspan="4" class="text-center py-4">
+                                    <i class="fas fa-cow fa-2x text-muted mb-2"></i>
+                                    <p class="text-muted mb-0">Nenhum animal adicionado este mês</p>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-6">
+        <div class="card shadow">
+            <div class="card-header bg-warning text-white">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-syringe me-2"></i>
+                    Vacinações Realizadas
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Animal</th>
+                                <th>Vacina</th>
+                                <th>Data</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td colspan="4" class="text-center py-4">
+                                    <i class="fas fa-syringe fa-2x text-muted mb-2"></i>
+                                    <p class="text-muted mb-0">Nenhuma vacinação registrada este mês</p>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Stock Movement -->
+<div class="row mb-5">
+    <div class="col-12">
+        <div class="card shadow">
+            <div class="card-header bg-info text-white">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-exchange-alt me-2"></i>
+                    Movimentação de Estoque - Este Mês
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Produto</th>
+                                <th>Tipo de Movimento</th>
+                                <th>Quantidade</th>
+                                <th>Data</th>
+                                <th>Valor Unitário</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td colspan="6" class="text-center py-4">
+                                    <i class="fas fa-boxes fa-2x text-muted mb-2"></i>
+                                    <p class="text-muted mb-0">Nenhuma movimentação de estoque registrada este mês</p>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Export and Action Buttons -->
+<div class="row">
+    <div class="col-12">
+        <div class="card shadow">
+            <div class="card-body text-center">
+                <h5 class="mb-3">Exportar Relatório</h5>
+                <div class="btn-group" role="group">
+                    <button type="button" class="btn btn-success">
+                        <i class="fas fa-file-excel me-2"></i>Excel
+                    </button>
+                    <button type="button" class="btn btn-danger">
+                        <i class="fas fa-file-pdf me-2"></i>PDF
+                    </button>
+                    <button type="button" class="btn btn-primary">
+                        <i class="fas fa-print me-2"></i>Imprimir
+                    </button>
+                    <button type="button" class="btn btn-info">
+                        <i class="fas fa-share-alt me-2"></i>Compartilhar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Back Navigation -->
+<div class="row mt-4">
+    <div class="col-12">
+        <a href="{% url 'relatorios_index' %}" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left me-2"></i>Voltar aos Relatórios
+        </a>
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,225 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Olho no Gado - Sistema de Gestão Pecuária{% endblock %}
+
+{% block content %}
+<!-- Welcome Section -->
+<div class="row">
+    <div class="col-12">
+        <div class="jumbotron bg-primary text-white p-4 p-md-5 rounded mb-4">
+            <div class="container-fluid">
+                <h1 class="display-4 display-md-3">
+                    🐄
+                    Bem-vindo ao Olho no Gado
+                </h1>
+                <p class="lead">Sistema de Gestão Pecuária Inteligente</p>
+                <hr class="my-4">
+                <p>Controle completo do seu rebanho, lotes, peso dos animais e gere relatórios detalhados em uma única plataforma moderna e responsiva.</p>
+                <div class="mt-4">
+                    <a href="{% url 'lista_animais' %}" class="btn btn-light btn-lg me-3">
+                        🐄 Ver Rebanho
+                    </a>
+                    <a href="{% url 'overview_piquetes' %}" class="btn btn-outline-light btn-lg">
+                        <i class="fas fa-chart-pie me-2"></i>Overview
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Features Section -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="text-center mb-4">
+            <h2 class="text-primary">
+                <i class="fas fa-star me-2"></i>
+                Recursos do Olho no Gado
+            </h2>
+            <p class="lead text-muted">Tecnologia moderna para gestão pecuária inteligente</p>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Actions -->
+<div class="row mb-4">
+    <div class="col-12">
+        <h3 class="mb-3">
+            <i class="fas fa-bolt me-2 text-warning"></i>
+            Ações Rápidas
+        </h3>
+    </div>
+</div>
+
+<div class="row g-4 mb-5">
+    <div class="col-md-3">
+        <div class="card h-100 shadow-sm border-0">
+            <div class="card-body text-center">
+                <div class="mb-3" style="font-size: 3rem;">
+                    🐄
+                </div>
+                <h5 class="card-title">Gerenciar Rebanho</h5>
+                <p class="card-text">Controle completo do rebanho, lotes, peso, vacinações e saúde dos animais.</p>
+                <a href="{% url 'lista_animais' %}" class="btn btn-primary">
+                    <i class="fas fa-eye me-2"></i>Ver Animais
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3">
+        <div class="card h-100 shadow-sm border-0">
+            <div class="card-body text-center">
+                <div class="mb-3">
+                    <i class="fas fa-boxes fa-3x text-success"></i>
+                </div>
+                <h5 class="card-title">Controle de Estoque</h5>
+                <p class="card-text">Gerencie medicamentos, rações e materiais da fazenda.</p>
+                <a href="{% url 'estoque_index' %}" class="btn btn-success">
+                    <i class="fas fa-eye me-2"></i>Ver Estoque
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3">
+        <div class="card h-100 shadow-sm border-0">
+            <div class="card-body text-center">
+                <div class="mb-3">
+                    <i class="fas fa-chart-bar fa-3x text-info"></i>
+                </div>
+                <h5 class="card-title">Relatórios</h5>
+                <p class="card-text">Gere relatórios detalhados e acompanhe a performance.</p>
+                <a href="{% url 'relatorios_index' %}" class="btn btn-info">
+                    <i class="fas fa-chart-line me-2"></i>Ver Relatórios
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3">
+        <div class="card h-100 shadow-sm border-0">
+            <div class="card-body text-center">
+                <div class="mb-3">
+                    <i class="fas fa-th-large fa-3x text-warning"></i>
+                </div>
+                <h5 class="card-title">Gestão de Lotes</h5>
+                <p class="card-text">Organize seus animais em lotes inteligentes com controle de peso total.</p>
+                <a href="{% url 'overview_piquetes' %}" class="btn btn-warning">
+                    <i class="fas fa-chart-pie me-2"></i>Ver Lotes
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Statistics Dashboard -->
+<div class="row mb-4">
+    <div class="col-12">
+        <h3 class="mb-3">
+            <i class="fas fa-chart-pie me-2 text-info"></i>
+            Visão Geral
+        </h3>
+    </div>
+</div>
+
+<div class="row g-4 mb-5">
+    <div class="col-md-4">
+        <div class="card bg-gradient-primary text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h6 class="card-title">Total de Animais</h6>
+                        <h2 class="mb-0">0</h2>
+                        <small>+0% este mês</small>
+                    </div>
+                    <div class="align-self-center" style="font-size: 2rem; opacity: 0.75;">
+                        🐄
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card bg-gradient-success text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h6 class="card-title">Produtos em Estoque</h6>
+                        <h2 class="mb-0">0</h2>
+                        <small>+0% este mês</small>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="fas fa-boxes fa-2x opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card bg-gradient-info text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h6 class="card-title">Fazendas Cadastradas</h6>
+                        <h2 class="mb-0">0</h2>
+                        <small>Total ativas</small>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="fas fa-map-marker-alt fa-2x opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Activity -->
+<div class="row">
+    <div class="col-12">
+        <div class="card shadow">
+            <div class="card-header bg-dark text-white">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-clock me-2"></i>
+                    Atividades Recentes
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="text-center py-4">
+                    <i class="fas fa-history fa-3x text-muted mb-3"></i>
+                    <h6 class="text-muted">Nenhuma atividade recente</h6>
+                    <p class="text-muted">As atividades da fazenda aparecerão aqui conforme você utiliza o sistema.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Custom Styles -->
+<style>
+.bg-gradient-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.bg-gradient-success {
+    background: linear-gradient(135deg, #2af598 0%, #009efd 100%);
+}
+
+.bg-gradient-info {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    transition: transform 0.3s ease;
+}
+
+.jumbotron {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+</style>
+
+{% endblock %}

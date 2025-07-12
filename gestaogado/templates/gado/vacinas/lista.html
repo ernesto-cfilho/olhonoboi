@@ -1,0 +1,122 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Gerenciar Vacinas{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="text-primary">
+                <i class="fas fa-syringe me-2"></i>Gerenciamento de Vacinas
+            </h2>
+            <a href="{% url 'adicionar_vacina' %}" class="btn btn-success">
+                <i class="fas fa-plus me-2"></i>Adicionar Vacina
+            </a>
+        </div>
+        
+        <!-- Mensagens -->
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    <i class="fas fa-info-circle me-2"></i>{{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+        
+        <div class="card shadow">
+            <div class="card-header bg-success text-white">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-list me-2"></i>Lista de Vacinas Cadastradas
+                </h5>
+            </div>
+            <div class="card-body">
+                {% if vacinas %}
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th><i class="fas fa-hashtag me-2"></i>ID</th>
+                                    <th><i class="fas fa-syringe me-2"></i>Nome da Vacina</th>
+                                    <th><i class="fas fa-calendar-check me-2"></i>Validade (dias)</th>
+                                    <th><i class="fas fa-cogs me-2"></i>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for vacina in vacinas %}
+                                <tr>
+                                    <td>
+                                        <span class="badge bg-primary">#{{ vacina.id }}</span>
+                                    </td>
+                                    <td>
+                                        <i class="fas fa-syringe me-2 text-success"></i>
+                                        <strong>{{ vacina.nome }}</strong>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-info">{{ vacina.validade_dias }} dias</span>
+                                    </td>
+                                    <td>
+                                        <div class="btn-group" role="group">
+                                            <a href="#" class="btn btn-sm btn-primary" title="Editar">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <a href="#" class="btn btn-sm btn-info" title="Histórico">
+                                                <i class="fas fa-history"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="text-center py-5">
+                        <i class="fas fa-syringe fa-3x text-muted mb-3"></i>
+                        <h5 class="text-muted">Nenhuma vacina cadastrada</h5>
+                        <p class="text-muted">Comece adicionando a primeira vacina ao sistema.</p>
+                        <a href="{% url 'adicionar_vacina' %}" class="btn btn-success">
+                            <i class="fas fa-plus me-2"></i>Adicionar Primeira Vacina
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- Quick Stats -->
+        <div class="row mt-4">
+            <div class="col-md-6">
+                <div class="card bg-success text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h6 class="card-title">Total de Vacinas</h6>
+                                <h3 class="mb-0">{{ vacinas|length }}</h3>
+                            </div>
+                            <div class="align-self-center">
+                                <i class="fas fa-syringe fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card bg-info text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h6 class="card-title">Usuário Logado</h6>
+                                <h3 class="mb-0">{{ user.username }}</h3>
+                            </div>
+                            <div class="align-self-center">
+                                <i class="fas fa-user fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

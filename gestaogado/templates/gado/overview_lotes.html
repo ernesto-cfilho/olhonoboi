@@ -1,0 +1,204 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Overview de Lotes - Olho no Gado{% endblock %}
+
+{% block content %}
+<div class="px-2 px-md-3">
+    <div class="d-flex justify-content-between align-items-center mb-3 mb-md-4 flex-wrap">
+        <h2 class="text-primary mb-2 mb-md-0" style="font-size: 1.3rem;">
+            <i class="fas fa-chart-pie me-1 me-md-2"></i>
+            <span class="d-none d-sm-inline">Overview de </span>Lotes
+            {% if fazenda_selecionada %}
+                <br><small class="text-muted d-md-none">{{ fazenda_selecionada.nome }}</small>
+                <span class="d-none d-md-inline"> - {{ fazenda_selecionada.nome }}</span>
+            {% endif %}
+        </h2>
+        <div class="d-flex flex-column flex-md-row gap-2">
+            <a href="{% url 'adicionar_piquete' %}" class="btn btn-success btn-sm">
+                <i class="fas fa-plus me-1"></i>
+                <span class="d-none d-sm-inline">Novo </span>Lote
+            </a>
+            <a href="{% url 'lista_animais' %}" class="btn btn-secondary btn-sm">
+                <i class="fas fa-cow me-1"></i>
+                <span class="d-none d-sm-inline">Ver </span>Animais
+            </a>
+        </div>
+    </div>
+        
+    <!-- Filtro por Fazenda -->
+    <div class="card mb-4">
+        <div class="card-body py-2">
+            <form method="get" class="d-flex align-items-center gap-2">
+                <label for="fazenda" class="form-label mb-0 text-nowrap">
+                    <i class="fas fa-filter me-1"></i>Fazenda:
+                </label>
+                <select class="form-control form-control-sm" id="fazenda" name="fazenda" onchange="this.form.submit()">
+                    <option value="">Todas as Fazendas</option>
+                    {% for fazenda in fazendas %}
+                    <option value="{{ fazenda.id }}" 
+                            {% if fazenda_selecionada and fazenda.id == fazenda_selecionada.id %}selected{% endif %}>
+                        {{ fazenda.nome }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </form>
+        </div>
+    </div>
+        
+    {% if lotes_data %}
+        <div class="row">
+            {% for item in lotes_data %}
+            <div class="col-12 col-sm-6 col-lg-4 mb-3 mb-md-4">
+                <div class="card shadow h-100">
+                    <div class="card-header bg-primary text-white">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="card-title mb-0">
+                                    <i class="fas fa-th-large me-2"></i>{{ item.lote.nome }}
+                                </h6>
+                                <small class="badge bg-success mt-1">{{ item.lote.fazenda.nome }}</small>
+                            </div>
+                            <h3 class="mb-0">{{ item.total_animais }}</h3>
+                        </div>
+                    </div>
+                    <div class="card-body">                            
+                        <div class="row mb-3">
+                            <div class="col-6 text-center">
+                                <div class="bg-success bg-opacity-10 p-2 rounded">
+                                    <h5 class="text-success mb-0">{{ item.gado_corte }}</h5>
+                                    <small class="text-muted">Corte</small>
+                                </div>
+                            </div>
+                            <div class="col-6 text-center">
+                                <div class="bg-info bg-opacity-10 p-2 rounded">
+                                    <h5 class="text-info mb-0">{{ item.gado_leite }}</h5>
+                                    <small class="text-muted">Leite</small>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row text-center">
+                            <div class="col-12">
+                                <small class="text-muted">Peso Total:</small><br>
+                                <strong>{{ item.peso_total_kg|floatformat:1 }}kg</strong>
+                                <small class="text-muted">({{ item.peso_total_arroba|floatformat:1 }}@)</small>
+                            </div>
+                        </div>
+                        
+                        {% if item.lote.area or item.lote.capacidade_maxima %}
+                        <hr>
+                        <div class="row text-center">
+                            {% if item.lote.area %}
+                            <div class="col-6">
+                                <small class="text-muted">Área:</small><br>
+                                <strong>{{ item.lote.area }} ha</strong>
+                            </div>
+                            {% endif %}
+                            {% if item.lote.capacidade_maxima %}
+                            <div class="col-6">
+                                <small class="text-muted">Capacidade:</small><br>
+                                <strong>{{ item.lote.capacidade_maxima }}</strong>
+                                {% if item.total_animais > item.lote.capacidade_maxima %}
+                                    <span class="text-danger">
+                                        <i class="fas fa-exclamation-triangle" title="Acima da capacidade!"></i>
+                                    </span>
+                                {% endif %}
+                            </div>
+                            {% endif %}
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="card-footer">
+                        <div class="btn-group w-100" role="group">
+                            <a href="{% url 'lista_animais' %}?lote={{ item.lote.id }}" 
+                               class="btn btn-outline-primary btn-sm">
+                                <i class="fas fa-eye"></i><span class="d-none d-lg-inline"> Ver</span>
+                            </a>
+                            <a href="{% url 'mover_animais' %}?lote={{ item.lote.id }}" 
+                               class="btn btn-outline-info btn-sm">
+                                <i class="fas fa-exchange-alt"></i><span class="d-none d-lg-inline"> Mover</span>
+                            </a>
+                            <a href="{% url 'adicionar_animal' %}?lote={{ item.lote.id }}" 
+                               class="btn btn-outline-success btn-sm">
+                                <i class="fas fa-plus"></i><span class="d-none d-lg-inline"> Animal</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <!-- Resumo Geral -->
+        {% if lotes_data|length > 1 %}
+        <div class="card mt-4">
+            <div class="card-header bg-dark text-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-chart-bar me-2"></i>Resumo Geral
+                    {% if fazenda_selecionada %}da {{ fazenda_selecionada.nome }}{% endif %}
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-6 col-md-3">
+                        <h4 class="text-primary">{{ lotes_data|length }}</h4>
+                        <p class="text-muted">Lotes</p>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <h4 class="text-success">
+                            {% with total=0 %}
+                                {% for item in lotes_data %}
+                                    {% with total=total|add:item.total_animais %}
+                                    {% endwith %}
+                                {% endfor %}
+                                {{ total }}
+                            {% endwith %}
+                        </h4>
+                        <p class="text-muted">Animais</p>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <h4 class="text-info">
+                            {% with total_corte=0 %}
+                                {% for item in lotes_data %}
+                                    {% with total_corte=total_corte|add:item.gado_corte %}
+                                    {% endwith %}
+                                {% endfor %}
+                                {{ total_corte }}
+                            {% endwith %}
+                        </h4>
+                        <p class="text-muted">Corte</p>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <h4 class="text-warning">
+                            {% with total_leite=0 %}
+                                {% for item in lotes_data %}
+                                    {% with total_leite=total_leite|add:item.gado_leite %}
+                                    {% endwith %}
+                                {% endfor %}
+                                {{ total_leite }}
+                            {% endwith %}
+                        </h4>
+                        <p class="text-muted">Leite</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        
+    {% else %}
+        <div class="text-center p-4">
+            <i class="fas fa-th-large fa-4x text-muted mb-3"></i>
+            <h4 class="text-muted">Nenhum lote encontrado</h4>
+            {% if fazenda_selecionada %}
+                <p class="text-muted">A fazenda {{ fazenda_selecionada.nome }} ainda não possui lotes.</p>
+            {% else %}
+                <p class="text-muted">Comece criando lotes para organizar seus animais!</p>
+            {% endif %}
+            <a href="{% url 'adicionar_piquete' %}" class="btn btn-success">
+                <i class="fas fa-plus me-2"></i>Criar Primeiro Lote
+            </a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,194 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Inserção em Lote de Animais{% endblock %}
+
+{% block content %}
+<div class="px-2 px-md-3">
+    <div class="d-flex justify-content-between align-items-center mb-3 mb-md-4 flex-wrap">
+        <h2 class="text-primary mb-2 mb-md-0" style="font-size: 1.3rem;">
+            <i class="fas fa-plus-square me-1 me-md-2"></i>
+            <span class="d-none d-sm-inline">Inserção em </span>Lote
+        </h2>
+        <a href="{% url 'lista_animais' %}" class="btn btn-secondary btn-sm">
+            <i class="fas fa-arrow-left me-1"></i>
+            <span class="d-none d-sm-inline">Voltar</span><span class="d-sm-none">Lista</span>
+        </a>
+    </div>
+        
+        <div class="card shadow">
+            <div class="card-header bg-success text-white">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-cow me-2"></i>Inserção em Lote com Peso Total
+                </h5>
+            </div>
+            <div class="card-body">
+                <form method="post" id="batchForm">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="fazenda" class="form-label">
+                            <i class="fas fa-map-marker-alt me-2"></i>Fazenda *
+                        </label>
+                        <select class="form-control" id="fazenda" name="fazenda" required>
+                            <option value="">Selecione uma fazenda</option>
+                            {% for fazenda in fazendas %}
+                            <option value="{{ fazenda.id }}">{{ fazenda.nome }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="lote" class="form-label">
+                            <i class="fas fa-th-large me-2"></i>Lote *
+                        </label>
+                        <select class="form-control" id="lote" name="lote" required>
+                            <option value="">Primeiro selecione uma fazenda</option>
+                        </select>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-sm-6">
+                            <label for="tipo" class="form-label">
+                                <i class="fas fa-cow me-2"></i>Tipo de Gado *
+                            </label>
+                            <select class="form-control" id="tipo" name="tipo" required>
+                                <option value="CORTE">Gado de Corte</option>
+                                <option value="LEITE">Gado Leiteiro</option>
+                            </select>
+                        </div>
+                        <div class="col-sm-6">
+                            <label for="data_entrada" class="form-label">
+                                <i class="fas fa-calendar me-2"></i>Data de Entrada
+                            </label>
+                            <input type="date" class="form-control" id="data_entrada" name="data_entrada">
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-sm-6">
+                            <label for="quantidade_animais" class="form-label">
+                                <i class="fas fa-hashtag me-2"></i>Quantidade de Animais *
+                            </label>
+                            <input type="number" class="form-control" id="quantidade_animais" name="quantidade_animais" 
+                                   min="1" required placeholder="Ex: 10" onchange="calcularPesoMedio()">
+                        </div>
+                        <div class="col-sm-6">
+                            <label for="peso_total" class="form-label">
+                                <i class="fas fa-weight-hanging me-2"></i>Peso Total *
+                            </label>
+                            <div class="input-group">
+                                <input type="number" step="0.01" class="form-control" id="peso_total" name="peso_total" 
+                                       required placeholder="Ex: 300" onchange="calcularPesoMedio()">
+                                <select class="form-select" id="unidade_peso" name="unidade_peso" onchange="calcularPesoMedio()">
+                                    <option value="kg">kg</option>
+                                    <option value="arroba">@</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="alert alert-info" id="infoCalculos" style="display: none;">
+                        <i class="fas fa-calculator me-2"></i>
+                        <strong>Cálculos Automáticos:</strong>
+                        <div id="calculosTexto"></div>
+                    </div>
+                    
+                    <div class="alert alert-success">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <strong>Como funciona:</strong> 
+                        Informe a quantidade de animais e o peso total do lote. O sistema calculará automaticamente 
+                        o peso médio por animal e gerará identificadores sequenciais únicos para cada animal.
+                    </div>
+                    
+                    <div class="text-end">
+                        <button type="submit" class="btn btn-success btn-lg">
+                            <i class="fas fa-save me-2"></i>Criar Lote de Animais
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Atualizar lotes quando fazenda mudar
+document.getElementById('fazenda').addEventListener('change', function() {
+    const fazendaId = this.value;
+    const loteSelect = document.getElementById('lote');
+    
+    loteSelect.innerHTML = '<option value="">Carregando...</option>';
+    
+    if (fazendaId) {
+        fetch(`/gado/ajax/lotes/?fazenda_id=${fazendaId}`)
+            .then(response => response.json())
+            .then(data => {
+                loteSelect.innerHTML = '<option value="">Selecione um lote</option>';
+                data.lotes.forEach(lote => {
+                    loteSelect.innerHTML += `<option value="${lote.id}">${lote.nome}</option>`;
+                });
+            })
+            .catch(error => {
+                console.error('Erro:', error);
+                loteSelect.innerHTML = '<option value="">Erro ao carregar lotes</option>';
+            });
+    } else {
+        loteSelect.innerHTML = '<option value="">Primeiro selecione uma fazenda</option>';
+    }
+});
+
+function calcularPesoMedio() {
+    const quantidade = document.getElementById('quantidade_animais').value;
+    const pesoTotal = document.getElementById('peso_total').value;
+    const unidade = document.getElementById('unidade_peso').value;
+    const infoDiv = document.getElementById('infoCalculos');
+    const textoDiv = document.getElementById('calculosTexto');
+    
+    if (quantidade && pesoTotal && quantidade > 0 && pesoTotal > 0) {
+        // Converter para kg se necessário
+        let pesoTotalKg = parseFloat(pesoTotal);
+        let pesoTotalArroba = parseFloat(pesoTotal);
+        
+        if (unidade === 'arroba') {
+            pesoTotalKg = pesoTotal * 15; // 1 arroba = 15kg
+        } else {
+            pesoTotalArroba = pesoTotal / 15; // kg para arroba
+        }
+        
+        const pesoMedioKg = pesoTotalKg / quantidade;
+        const pesoMedioArroba = pesoTotalArroba / quantidade;
+        
+        textoDiv.innerHTML = `
+            <div><strong>Peso Total:</strong> ${pesoTotalKg.toFixed(1)}kg (${pesoTotalArroba.toFixed(2)}@)</div>
+            <div><strong>Peso Médio por Animal:</strong> ${pesoMedioKg.toFixed(1)}kg (${pesoMedioArroba.toFixed(2)}@)</div>
+            <div><strong>Quantidade:</strong> ${quantidade} animais</div>
+        `;
+        
+        infoDiv.style.display = 'block';
+    } else {
+        infoDiv.style.display = 'none';
+    }
+}
+
+// Definir data atual como padrão
+document.getElementById('data_entrada').valueAsDate = new Date();
+
+// Validação do formulário
+document.getElementById('batchForm').addEventListener('submit', function(e) {
+    const quantidade = document.getElementById('quantidade_animais').value;
+    const pesoTotal = document.getElementById('peso_total').value;
+    
+    if (!quantidade || !pesoTotal || quantidade <= 0 || pesoTotal <= 0) {
+        e.preventDefault();
+        alert('Por favor, preencha a quantidade de animais e o peso total com valores válidos.');
+        return false;
+    }
+    
+    const confirmMsg = `Confirma a criação de ${quantidade} animais com peso total de ${pesoTotal} ${document.getElementById('unidade_peso').value}?`;
+    if (!confirm(confirmMsg)) {
+        e.preventDefault();
+        return false;
+    }
+});
+</script>
+{% endblock %}

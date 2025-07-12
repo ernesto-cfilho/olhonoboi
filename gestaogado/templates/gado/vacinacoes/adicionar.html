@@ -1,0 +1,185 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Registrar Vacinação{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="text-primary">
+                <i class="fas fa-plus-circle me-2"></i>Registrar Nova Vacinação
+            </h2>
+            <a href="{% url 'lista_vacinacoes' %}" class="btn btn-secondary">
+                <i class="fas fa-arrow-left me-2"></i>Voltar ao Histórico
+            </a>
+        </div>
+        
+        <!-- Mensagens -->
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    <i class="fas fa-info-circle me-2"></i>{{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+        
+        <div class="card shadow">
+            <div class="card-header bg-info text-white">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-calendar-check me-2"></i>Dados da Vacinação
+                </h5>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="animal" class="form-label">
+                                    <i class="fas fa-cow me-2"></i>Animal
+                                </label>
+                                <select class="form-control form-control-lg" id="animal" name="animal" required>
+                                    <option value="">Selecione um animal</option>
+                                    {% for animal in animais %}
+                                    <option value="{{ animal.id }}">
+                                        {{ animal.identificador }} - {{ animal.fazenda.nome }}
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                                <small class="form-text text-muted">
+                                    Escolha o animal que recebeu a vacina
+                                </small>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="vacina" class="form-label">
+                                    <i class="fas fa-syringe me-2"></i>Vacina Aplicada
+                                </label>
+                                <select class="form-control form-control-lg" id="vacina" name="vacina" required>
+                                    <option value="">Selecione uma vacina</option>
+                                    {% for vacina in vacinas %}
+                                    <option value="{{ vacina.id }}">
+                                        {{ vacina.nome }} ({{ vacina.validade_dias }} dias)
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                                <small class="form-text text-muted">
+                                    Escolha a vacina que foi aplicada
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="data_aplicacao" class="form-label">
+                                    <i class="fas fa-calendar me-2"></i>Data da Aplicação
+                                </label>
+                                <input type="date" class="form-control form-control-lg" id="data_aplicacao" 
+                                       name="data_aplicacao" required value="{{ 'now'|date:'Y-m-d' }}">
+                                <small class="form-text text-muted">
+                                    Data em que a vacina foi aplicada
+                                </small>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">
+                                    <i class="fas fa-user me-2"></i>Registrado por
+                                </label>
+                                <input type="text" class="form-control form-control-lg" 
+                                       value="{{ user.username }}" readonly>
+                                <small class="form-text text-muted">
+                                    Usuário responsável pelo registro
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <div class="alert alert-info">
+                                <i class="fas fa-info-circle me-2"></i>
+                                <strong>Importante:</strong> Este registro ficará permanente no histórico de vacinações do animal.
+                                Certifique-se de que as informações estão corretas antes de salvar.
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="text-end mt-4">
+                        <button type="button" class="btn btn-secondary me-2" onclick="history.back()">
+                            <i class="fas fa-times me-2"></i>Cancelar
+                        </button>
+                        <button type="submit" class="btn btn-success btn-lg">
+                            <i class="fas fa-save me-2"></i>Registrar Vacinação
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <!-- Quick Info -->
+        <div class="row mt-4">
+            <div class="col-md-6">
+                {% if not animais %}
+                <div class="card border-warning">
+                    <div class="card-header bg-warning text-dark">
+                        <h6 class="mb-0">
+                            <i class="fas fa-exclamation-triangle me-2"></i>Nenhum Animal Cadastrado
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <p class="mb-2">Para registrar vacinações, você precisa ter animais cadastrados.</p>
+                        <a href="{% url 'adicionar_animal' %}" class="btn btn-warning btn-sm">
+                            <i class="fas fa-plus me-2"></i>Cadastrar Animal
+                        </a>
+                    </div>
+                </div>
+                {% endif %}
+                
+                {% if not vacinas %}
+                <div class="card border-danger mt-3">
+                    <div class="card-header bg-danger text-white">
+                        <h6 class="mb-0">
+                            <i class="fas fa-exclamation-triangle me-2"></i>Nenhuma Vacina Cadastrada
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <p class="mb-2">Para registrar vacinações, você precisa ter vacinas cadastradas.</p>
+                        <a href="{% url 'adicionar_vacina' %}" class="btn btn-danger btn-sm">
+                            <i class="fas fa-plus me-2"></i>Cadastrar Vacina
+                        </a>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+            <div class="col-md-6">
+                <div class="card border-primary">
+                    <div class="card-header bg-primary text-white">
+                        <h6 class="mb-0">
+                            <i class="fas fa-info-circle me-2"></i>Informações do Registro
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <p class="mb-1"><strong>Usuário:</strong> {{ user.username }}</p>
+                        <p class="mb-1"><strong>Tipo:</strong> 
+                            {% if user.is_staff %}
+                                <span class="badge bg-success">Administrador</span>
+                            {% else %}
+                                <span class="badge bg-primary">Funcionário</span>
+                            {% endif %}
+                        </p>
+                        <p class="mb-1"><strong>Data/Hora:</strong> {{ "now"|date:"d/m/Y H:i" }}</p>
+                        <p class="mb-0"><strong>Animais:</strong> {{ animais|length }} cadastrados</p>
+                        <p class="mb-0"><strong>Vacinas:</strong> {{ vacinas|length }} disponíveis</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

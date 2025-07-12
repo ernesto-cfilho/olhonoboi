@@ -1,0 +1,161 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Lista de Lotes - Olho no Gado{% endblock %}
+
+{% block content %}
+<div class="px-2 px-md-3">
+    <div class="d-flex justify-content-between align-items-center mb-3 mb-md-4 flex-wrap">
+        <h2 class="text-primary mb-2 mb-md-0" style="font-size: 1.3rem;">
+            <i class="fas fa-th-large me-1 me-md-2"></i>
+            <span class="d-none d-sm-inline">Lista de </span>Lotes
+        </h2>
+        <div class="d-flex gap-2">
+            <a href="{% url 'adicionar_piquete' %}" class="btn btn-success btn-sm">
+                <i class="fas fa-plus me-1"></i>
+                <span class="d-none d-sm-inline">Novo Lote</span><span class="d-sm-none">Novo</span>
+            </a>
+            <a href="{% url 'overview_piquetes' %}" class="btn btn-info btn-sm">
+                <i class="fas fa-chart-bar me-1"></i>
+                <span class="d-none d-sm-inline">Overview</span><span class="d-sm-none">Chart</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Filtro por fazenda -->
+    <div class="card mb-3">
+        <div class="card-body py-2">
+            <form method="get" class="d-flex align-items-center gap-2">
+                <label for="fazenda" class="form-label mb-0 text-nowrap">
+                    <i class="fas fa-filter me-1"></i>Fazenda:
+                </label>
+                <select name="fazenda" id="fazenda" class="form-select form-select-sm" onchange="this.form.submit()">
+                    <option value="">Todas as fazendas</option>
+                    {% for fazenda in fazendas %}
+                    <option value="{{ fazenda.id }}" {% if fazenda_selecionada and fazenda.id == fazenda_selecionada.id %}selected{% endif %}>
+                        {{ fazenda.nome }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </form>
+        </div>
+    </div>
+
+    {% if fazenda_selecionada %}
+    <div class="alert alert-info mb-3">
+        <i class="fas fa-info-circle me-2"></i>
+        Mostrando lotes da fazenda: <strong>{{ fazenda_selecionada.nome }}</strong>
+        <a href="{% url 'lista_piquetes' %}" class="btn btn-sm btn-outline-secondary ms-2">Ver todos</a>
+    </div>
+    {% endif %}
+
+    <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+            <h5 class="card-title mb-0">
+                <i class="fas fa-th-large me-2"></i>Lotes Cadastrados
+                <span class="badge bg-light text-dark ms-2">{{ lotes.count }}</span>
+            </h5>
+        </div>
+        <div class="card-body p-0">
+            {% if lotes %}
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead class="table-dark">
+                        <tr>
+                            <th class="text-center" style="width: 25%;">Fazenda</th>
+                            <th style="width: 25%;">Nome do Lote</th>
+                            <th class="text-center d-none d-md-table-cell" style="width: 15%;">Área</th>
+                            <th class="text-center d-none d-md-table-cell" style="width: 15%;">Capacidade</th>
+                            <th class="text-center" style="width: 20%;">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for lote in lotes %}
+                        <tr>
+                            <td class="text-center align-middle">
+                                <span class="badge bg-success">{{ lote.fazenda.nome }}</span>
+                            </td>
+                            <td class="align-middle">
+                                <i class="fas fa-th-large text-primary me-2"></i>
+                                <strong>{{ lote.nome }}</strong>
+                            </td>
+                            <td class="text-center align-middle d-none d-md-table-cell">
+                                {% if lote.area %}
+                                    {{ lote.area }} ha
+                                {% else %}
+                                    <span class="text-muted">-</span>
+                                {% endif %}
+                            </td>
+                            <td class="text-center align-middle d-none d-md-table-cell">
+                                {% if lote.capacidade_maxima %}
+                                    {{ lote.capacidade_maxima }}
+                                {% else %}
+                                    <span class="text-muted">-</span>
+                                {% endif %}
+                            </td>
+                            <td class="text-center align-middle">
+                                <div class="btn-group" role="group">
+                                    <a href="{% url 'editar_piquete' lote.id %}" 
+                                       class="btn btn-outline-primary btn-sm" 
+                                       title="Editar">
+                                        <i class="fas fa-edit"></i>
+                                        <span class="d-none d-lg-inline ms-1">Editar</span>
+                                    </a>
+                                    <button onclick="deletarLote({{ lote.id }}, '{{ lote.nome }}')" 
+                                            class="btn btn-outline-danger btn-sm" 
+                                            title="Excluir">
+                                        <i class="fas fa-trash"></i>
+                                        <span class="d-none d-lg-inline ms-1">Excluir</span>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="text-center p-4">
+                <i class="fas fa-th-large fa-3x text-muted mb-3"></i>
+                <h5 class="text-muted">Nenhum lote encontrado</h5>
+                <p class="text-muted">
+                    {% if fazenda_selecionada %}
+                        Não há lotes cadastrados para esta fazenda.
+                    {% else %}
+                        Comece adicionando seu primeiro lote.
+                    {% endif %}
+                </p>
+                <a href="{% url 'adicionar_piquete' %}" class="btn btn-success">
+                    <i class="fas fa-plus me-2"></i>Adicionar Primeiro Lote
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script>
+function deletarLote(loteId, nomeLote) {
+    if (confirm(`Tem certeza que deseja excluir o lote "${nomeLote}"?`)) {
+        fetch(`/fazendascdst/deletar_piquete/${loteId}/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                location.reload();
+            } else {
+                alert('Erro: ' + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Erro:', error);
+            alert('Erro ao excluir lote!');
+        });
+    }
+}
+</script>
+{% endblock %}
