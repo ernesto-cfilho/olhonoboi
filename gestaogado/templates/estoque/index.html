@@ -10,7 +10,7 @@
             <i class="fas fa-boxes me-1 me-md-2"></i>
             <span class="d-none d-sm-inline">Controle de </span>Estoque
         </h2>
-        <a href="#" class="btn btn-success btn-sm">
+        <a href="{% url 'adicionar_produto' %}" class="btn btn-success btn-sm">
             <i class="fas fa-plus me-1"></i>
             <span class="d-none d-sm-inline">Novo Produto</span><span class="d-sm-none">Novo</span>
         </a>
@@ -79,8 +79,14 @@
                                     </td>
                                     <td class="text-center align-middle">
                                         <div class="btn-group" role="group">
-                                            <button class="btn btn-outline-primary btn-sm" title="Editar">
+                                            <a href="{% url 'editar_produto' produto.id %}" class="btn btn-outline-primary btn-sm" title="Editar">
                                                 <i class="fas fa-edit"></i>
+                                            </a>
+                                            <a href="{% url 'movimentar_estoque' produto.id %}" class="btn btn-outline-info btn-sm" title="Movimentar">
+                                                <i class="fas fa-exchange-alt"></i>
+                                            </a>
+                                            <button class="btn btn-outline-danger btn-sm" title="Excluir" onclick="deletarProduto({{ produto.id }}, '{{ produto.nome }}')">
+                                                <i class="fas fa-trash"></i>
                                             </button>
                                         </div>
                                     </td>
@@ -94,7 +100,7 @@
                 <i class="fas fa-boxes fa-3x text-muted mb-3"></i>
                 <h5 class="text-muted">Nenhum produto em estoque</h5>
                 <p class="text-muted">Comece adicionando produtos ao seu estoque.</p>
-                <a href="#" class="btn btn-success">
+                <a href="{% url 'adicionar_produto' %}" class="btn btn-success">
                     <i class="fas fa-plus me-2"></i>Adicionar Primeiro Produto
                 </a>
             </div>
@@ -166,4 +172,26 @@
         </div>
     </div>
 </div>
+
+<script>
+function deletarProduto(produtoId, nome) {
+    if (confirm(`Tem certeza que deseja excluir o produto "${nome}"?`)) {
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = `/estoque/deletar/${produtoId}/`;
+        
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+        const csrfInput = document.createElement('input');
+        csrfInput.type = 'hidden';
+        csrfInput.name = 'csrfmiddlewaretoken';
+        csrfInput.value = csrfToken;
+        
+        form.appendChild(csrfInput);
+        document.body.appendChild(form);
+        form.submit();
+    }
+}
+</script>
+
+{% csrf_token %}
 {% endblock %}

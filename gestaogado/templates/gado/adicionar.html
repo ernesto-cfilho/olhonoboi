@@ -52,10 +52,10 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label for="piquete" class="form-label">
-                                    <i class="fas fa-th-large me-2"></i>Piquete
+                                <label for="lote" class="form-label">
+                                    <i class="fas fa-th-large me-2"></i>Lote
                                 </label>
-                                <select class="form-control" id="piquete" name="piquete" required>
+                                <select class="form-control" id="lote" name="lote" required>
                                     <option value="">Primeiro selecione uma fazenda</option>
                                 </select>
                             </div>
@@ -108,26 +108,26 @@
 <script>
 document.getElementById('fazenda').addEventListener('change', function() {
     const fazendaId = this.value;
-    const piqueteSelect = document.getElementById('piquete');
+    const loteSelect = document.getElementById('lote');
     
     // Limpar opções
-    piqueteSelect.innerHTML = '<option value="">Carregando...</option>';
+    loteSelect.innerHTML = '<option value="">Carregando...</option>';
     
     if (fazendaId) {
-        fetch(`/gado/ajax/piquetes/?fazenda_id=${fazendaId}`)
+        fetch(`/gado/ajax/lotes/?fazenda_id=${fazendaId}`)
             .then(response => response.json())
             .then(data => {
-                piqueteSelect.innerHTML = '<option value="">Selecione um piquete</option>';
-                data.piquetes.forEach(piquete => {
-                    piqueteSelect.innerHTML += `<option value="${piquete.id}">${piquete.nome}</option>`;
+                loteSelect.innerHTML = '<option value="">Selecione um lote</option>';
+                data.lotes.forEach(lote => {
+                    loteSelect.innerHTML += `<option value="${lote.id}">${lote.nome}</option>`;
                 });
             })
             .catch(error => {
                 console.error('Erro:', error);
-                piqueteSelect.innerHTML = '<option value="">Erro ao carregar piquetes</option>';
+                loteSelect.innerHTML = '<option value="">Erro ao carregar lotes</option>';
             });
     } else {
-        piqueteSelect.innerHTML = '<option value="">Primeiro selecione uma fazenda</option>';
+        loteSelect.innerHTML = '<option value="">Primeiro selecione uma fazenda</option>';
     }
 });
 

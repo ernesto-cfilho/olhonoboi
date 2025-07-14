@@ -30,6 +30,13 @@ def adicionar_animal(request):
                 ultimo_animal = Animal.objects.filter(fazenda=fazenda).order_by('identificador').last()
                 identificador = ultimo_animal.identificador + 1 if ultimo_animal and ultimo_animal.identificador else 1
             
+            # Verificar capacidade máxima do lote
+            if lote.capacidade_maxima:
+                animais_no_lote = lote.animais.count()
+                if animais_no_lote >= lote.capacidade_maxima:
+                    messages.error(request, f'Lote {lote.nome} já está na capacidade máxima ({lote.capacidade_maxima} animais)!')
+                    raise Exception('Capacidade máxima do lote excedida')
+            
             animal = Animal.objects.create(
                 fazenda=fazenda,
                 lote=lote,
@@ -194,16 +201,20 @@ def batch_insert_animais(request):
             # Calcular peso médio por animal
             peso_medio_kg = peso_total_kg / quantidade_animais
             
-            # Obter próximo identificador
-            ultimo_animal = Animal.objects.filter(fazenda=fazenda).order_by('identificador').last()
-            proximo_id = ultimo_animal.identificador + 1 if ultimo_animal and ultimo_animal.identificador else 1
+            # Verificar capacidade máxima do lote
+            if lote.capacidade_maxima:
+                animais_no_lote = lote.animais.count()
+                if (animais_no_lote + quantidade_animais) > lote.capacidade_maxima:
+                    messages.error(request, f'Lote {lote.nome} não tem capacidade para {quantidade_animais} animais! Capacidade atual: {lote.capacidade_maxima - animais_no_lote} vagas disponíveis.')
+                    raise Exception('Capacidade máxima do lote excedida')
             
+            # Criar animais sem identificadores automáticos
             animais_criados = []
             for i in range(quantidade_animais):
                 animal = Animal.objects.create(
                     fazenda=fazenda,
                     lote=lote,
-                    identificador=proximo_id + i,
+                    identificador=None,  # Deixar identificador como None para ser preenchido pelo cliente
                     tipo=tipo,
                     data_entrada=data_entrada,
                     peso=peso_medio_kg

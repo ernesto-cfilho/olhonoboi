@@ -16,15 +16,12 @@
                 <p class="text-muted mb-0">Período: {% now "F Y" %}</p>
             </div>
             <div class="btn-group" role="group">
-                <button type="button" class="btn btn-outline-secondary">
-                    <i class="fas fa-chevron-left me-1"></i>Mês Anterior
-                </button>
-                <button type="button" class="btn btn-outline-primary">
-                    <i class="fas fa-calendar me-2"></i>Selecionar Período
-                </button>
-                <button type="button" class="btn btn-outline-secondary">
-                    Próximo Mês<i class="fas fa-chevron-right ms-1"></i>
-                </button>
+                <a href="{% url 'exportar_pdf_mensal' %}" class="btn btn-outline-danger">
+                    <i class="fas fa-file-pdf me-2"></i>Exportar PDF
+                </a>
+                <a href="{% url 'exportar_excel_mensal' %}" class="btn btn-outline-success">
+                    <i class="fas fa-file-excel me-2"></i>Exportar Excel
+                </a>
             </div>
         </div>
     </div>

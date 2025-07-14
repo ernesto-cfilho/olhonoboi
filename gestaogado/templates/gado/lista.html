@@ -99,7 +99,7 @@
 
 <script>
 function deletarAnimal(animalId, identificador) {
-    if (confirm(`Tem certeza que deseja remover o animal ${identificador}?\n\nObs: O animal será marcado como inativo, mas não será perdido permanentemente.`)) {
+    if (confirm(`Tem certeza da exclusão desse animal?`)) {
         fetch(`/gado/deletar/${animalId}/`, {
             method: 'POST',
             headers: {
