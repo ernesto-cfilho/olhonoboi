@@ -53,6 +53,10 @@
             .form-control { min-height: 44px; }
             .dropdown-toggle::after { display: none; }
         }
+        /* General background image for the whole site */
+        body {
+            background: url('{% static 'img/fields-6558064_1280.jpg' %}') center center/cover no-repeat fixed;
+        }
     </style>
     <!-- CSS Específico por Página -->
     {% block extra_css %}{% endblock %}
@@ -62,7 +66,7 @@
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
         <div class="container-fluid">
             <a class="navbar-brand" href="{% url 'index' %}">
-                🐄
+                <img src="{% static 'img/pexels-matheus-lara-1785960246-31026900.jpg' %}" alt="Trator" style="height: 1.5em; width: auto; vertical-align: middle; margin-right: 0.3em;">
                 <span class="d-none d-md-inline">Olho no Gado</span>
                 <span class="d-md-none">Olho no Gado</span>
             </a>
@@ -101,7 +105,7 @@
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="gadoDropdown" role="button" 
                            data-bs-toggle="dropdown">
-                            🐄 Gado
+                            <img src="{% static 'img/pexels-matheus-lara-1785960246-31026900.jpg' %}" alt="Trator" style="height: 1.2em; width: auto; vertical-align: middle; margin-right: 0.3em;"> Gado
                         </a>
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" href="{% url 'lista_animais' %}">

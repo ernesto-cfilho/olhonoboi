@@ -7,10 +7,10 @@
 <!-- Welcome Section -->
 <div class="row">
     <div class="col-12">
-        <div class="jumbotron bg-primary text-white p-4 p-md-5 rounded mb-4">
+        <div class="jumbotron bg-primary text-white p-4 p-md-5 rounded mb-4" style="background: url('{% static 'img/fields-6558064_1280.jpg' %}') center center/cover no-repeat;">
             <div class="container-fluid">
                 <h1 class="display-4 display-md-3">
-                    🐄
+                    <img src="{% static 'img/pexels-matheus-lara-1785960246-31026900.jpg' %}" alt="Trator" style="height: 2em; width: auto; vertical-align: middle; margin-right: 0.3em;">
                     Bem-vindo ao Olho no Gado
                 </h1>
                 <p class="lead">Sistema de Gestão Pecuária Inteligente</p>
@@ -18,7 +18,7 @@
                 <p>Controle completo do seu rebanho, lotes, peso dos animais e gere relatórios detalhados em uma única plataforma moderna e responsiva.</p>
                 <div class="mt-4">
                     <a href="{% url 'lista_animais' %}" class="btn btn-light btn-lg me-3">
-                        🐄 Ver Rebanho
+                        <img src="{% static 'img/pexels-matheus-lara-1785960246-31026900.jpg' %}" alt="Trator" style="height: 1.2em; width: auto; vertical-align: middle; margin-right: 0.3em;"> Ver Rebanho
                     </a>
                     <a href="{% url 'overview_piquetes' %}" class="btn btn-outline-light btn-lg">
                         <i class="fas fa-chart-pie me-2"></i>Overview
@@ -32,7 +32,7 @@
 <!-- Features Section -->
 <div class="row mb-4">
     <div class="col-12">
-        <div class="text-center mb-4">
+        <div class="text-center mb-4" style="background-color: rgb(236, 250, 255); border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); padding: 1.5rem 0;">
             <h2 class="text-primary">
                 <i class="fas fa-star me-2"></i>
                 Recursos do Olho no Gado
@@ -44,11 +44,10 @@
 
 <!-- Quick Actions -->
 <div class="row mb-4">
-    <div class="col-12">
-        <h3 class="mb-3">
-            <i class="fas fa-bolt me-2 text-warning"></i>
-            Ações Rápidas
-        </h3>
+    <div style="padding: 1.2rem 0;">
+        <span style="background-color: rgb(83, 121, 99); color: white; border-radius: 12px; padding: 0.8rem 2.2rem; font-weight: bold; display: inline-flex; align-items: center; font-size: 1.5rem;">
+          ⚡ Ações Rápidas
+        </span>
     </div>
 </div>
 
@@ -57,7 +56,7 @@
         <div class="card h-100 shadow-sm border-0">
             <div class="card-body text-center">
                 <div class="mb-3" style="font-size: 3rem;">
-                    🐄
+                    <img src="{% static 'img/pexels-matheus-lara-1785960246-31026900.jpg' %}" alt="Trator" style="height: 2em; width: auto; vertical-align: middle;">
                 </div>
                 <h5 class="card-title">Gerenciar Rebanho</h5>
                 <p class="card-text">Controle completo do rebanho, lotes, peso, vacinações e saúde dos animais.</p>
@@ -115,14 +114,16 @@
 </div>
 
 <!-- Statistics Dashboard -->
-<div class="row mb-4">
+<div class="row" style="margin-bottom: 0.5rem;">
     <div class="col-12">
-        <h3 class="mb-3">
-            <i class="fas fa-chart-pie me-2 text-info"></i>
+        <h3 style="margin-bottom: 0.5rem;">
+          <span style="background-color: rgb(83, 121, 99); color: white; border-radius: 8px; padding: 0.4rem 0.8rem; font-weight: bold; display: inline-flex; align-items: center;">
+            <i class="fas fa-chart-pie me-2" style="color: white;"></i>
             Visão Geral
+          </span>
         </h3>
+      </div>
     </div>
-</div>
 
 <div class="row g-4 mb-5">
     <div class="col-md-4">
@@ -135,7 +136,7 @@
                         <small>+0% este mês</small>
                     </div>
                     <div class="align-self-center" style="font-size: 2rem; opacity: 0.75;">
-                        🐄
+                        <img src="{% static 'img/pexels-matheus-lara-1785960246-31026900.jpg' %}" alt="Trator" style="height: 1.5em; width: auto; vertical-align: middle; opacity: 0.75;">
                     </div>
                 </div>
             </div>
