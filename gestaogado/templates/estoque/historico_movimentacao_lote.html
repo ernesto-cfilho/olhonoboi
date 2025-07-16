@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-4">
+    <h2>Histórico de Movimentações de Lote</h2>
+    <a href="{% url 'movimentacao_lote' %}" class="btn btn-primary mb-3">Nova Movimentação</a>
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>Lote</th>
+                <th>Data</th>
+                <th>Tipo</th>
+                <th>Quantidade</th>
+                <th>Peso Médio (kg)</th>
+                <th>Motivo</th>
+                <th>Obs. Manejo</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for mov in historico %}
+            <tr>
+                <td>{{ mov.lote.nome }}</td>
+                <td>{{ mov.data|date:'d/m/Y' }}</td>
+                <td>{{ mov.get_tipo_display }}</td>
+                <td>{{ mov.quantidade }}</td>
+                <td>{{ mov.peso_medio }}</td>
+                <td>{{ mov.motivo }}</td>
+                <td>{{ mov.obs_manejo }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="7">Nenhuma movimentação registrada.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %} 

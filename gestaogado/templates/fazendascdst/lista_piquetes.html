@@ -69,7 +69,7 @@
                                 <tr>
                                     <th>Nome</th>
                                     <th>Fazenda</th>
-                                    <th>Área (ha)</th>
+
                                     <th>Capacidade</th>
                                     <th>Animais</th>
                                     <th>Data de Cadastro</th>
@@ -81,11 +81,9 @@
                                 <tr>
                                     <td><strong>{{ piquete.nome }}</strong></td>
                                     <td><span class="badge bg-info">{{ piquete.fazenda.nome }}</span></td>
+
                                     <td>
-                                        {% if piquete.area %}{{ piquete.area }} ha{% else %}<span class="text-muted">N/A</span>{% endif %}
-                                    </td>
-                                    <td>
-                                        {% if piquete.capacidade_maxima %}{{ piquete.capacidade_maxima }} animais{% else %}<span class="text-muted">Sem limite</span>{% endif %}
+                                        <span class="text-success">Ilimitada</span>
                                     </td>
                                     <td>
                                         <a href="{% url 'overview_piquetes' %}?fazenda={{ piquete.fazenda.id }}" class="btn btn-sm btn-outline-success">
@@ -133,14 +131,10 @@
                                 
                                 <div class="row text-muted small mb-2">
                                     <div class="col-6">
-                                        <i class="fas fa-ruler-combined me-1"></i>
-                                        {% if piquete.area %}{{ piquete.area }} ha{% else %}N/A{% endif %}
+                                        <i class="fas fa-users me-1"></i>
+                                        Ilimitada
                                     </div>
                                     <div class="col-6">
-                                        <i class="fas fa-users me-1"></i>
-                                        {% if piquete.capacidade_maxima %}{{ piquete.capacidade_maxima }}{% else %}Sem limite{% endif %}
-                                    </div>
-                                    <div class="col-12 mt-1">
                                         <i class="fas fa-calendar me-1"></i>{{ piquete.data_de_cadastro|date:"d/m/Y" }}
                                     </div>
                                 </div>

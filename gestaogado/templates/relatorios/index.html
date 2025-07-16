@@ -12,14 +12,6 @@
                 <i class="fas fa-chart-bar me-3"></i>
                 Central de Relatórios
             </h1>
-            <div class="btn-group" role="group">
-                <button type="button" class="btn btn-outline-primary">
-                    <i class="fas fa-download me-2"></i>Exportar Dados
-                </button>
-                <button type="button" class="btn btn-outline-success">
-                    <i class="fas fa-print me-2"></i>Imprimir
-                </button>
-            </div>
         </div>
     </div>
 </div>
@@ -28,7 +20,7 @@
 <div class="row g-4 mb-5">
     <div class="col-md-6">
         <div class="card h-100 shadow-sm border-0 report-card">
-            <div class="card-header bg-gradient-primary text-white">
+            <div class="card-header" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
                 <h5 class="card-title mb-0">
                     <i class="fas fa-calendar-alt me-2"></i>
                     Relatório Mensal
@@ -42,7 +34,6 @@
                             <li><i class="fas fa-check text-success me-2"></i>Rebanho e vacinações</li>
                             <li><i class="fas fa-check text-success me-2"></i>Movimentação de estoque</li>
                             <li><i class="fas fa-check text-success me-2"></i>Custos e receitas</li>
-                            <li><i class="fas fa-check text-success me-2"></i>Performance geral</li>
                         </ul>
                     </div>
                     <div class="col-4 text-center">
@@ -50,7 +41,7 @@
                     </div>
                 </div>
                 <div class="d-grid">
-                    <a href="{% url 'relatorio_mensal' %}" class="btn btn-primary btn-lg">
+                    <a href="{% url 'relatorio_mensal' %}" class="btn btn-lg" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; color: white;">
                         <i class="fas fa-eye me-2"></i>Visualizar Relatório
                     </a>
                 </div>
@@ -60,7 +51,7 @@
     
     <div class="col-md-6">
         <div class="card h-100 shadow-sm border-0 report-card">
-            <div class="card-header bg-gradient-success text-white">
+            <div class="card-header" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white;">
                 <h5 class="card-title mb-0">
                     <i class="fas fa-chart-pie me-2"></i>
                     Relatório Anual
@@ -72,9 +63,8 @@
                         <p class="card-text">Análise completa do desempenho anual com:</p>
                         <ul class="list-unstyled">
                             <li><i class="fas fa-check text-success me-2"></i>Crescimento do rebanho</li>
-                            <li><i class="fas fa-check text-success me-2"></i>Balanço financeiro</li>
                             <li><i class="fas fa-check text-success me-2"></i>Produtividade</li>
-                            <li><i class="fas fa-check text-success me-2"></i>Tendência de mercado</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Movimentação de estoque</li>
                         </ul>
                     </div>
                     <div class="col-4 text-center">
@@ -82,7 +72,7 @@
                     </div>
                 </div>
                 <div class="d-grid">
-                    <a href="{% url 'relatorio_anual' %}" class="btn btn-success btn-lg">
+                    <a href="{% url 'relatorio_anual' %}" class="btn btn-lg" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); border: none; color: white;">
                         <i class="fas fa-eye me-2"></i>Visualizar Relatório
                     </a>
                 </div>
@@ -98,18 +88,24 @@
             <i class="fas fa-tachometer-alt me-2 text-info"></i>
             Indicadores Rápidos
         </h3>
+        {% if mes_atual %}
+        <p class="text-muted mb-0">
+            <i class="fas fa-calendar-alt me-1"></i>
+            {{ mes_atual }}
+        </p>
+        {% endif %}
     </div>
 </div>
 
 <div class="row g-4 mb-5">
     <div class="col-md-3">
-        <div class="card bg-gradient-info text-white">
+        <div class="card bg-primary text-white">
             <div class="card-body">
                 <div class="d-flex justify-content-between">
                     <div>
                         <h6 class="card-title">Animais Este Mês</h6>
-                        <h2 class="mb-0">0</h2>
-                        <small><i class="fas fa-arrow-up"></i> +0% vs mês anterior</small>
+                        <h2 class="mb-0">{{ animais_mes }}</h2>
+                        <small><i class="fas fa-arrow-up"></i> +{{ animais_mes }} vs mês anterior</small>
                     </div>
                     <div class="align-self-center">
                         <i class="fas fa-cow fa-2x opacity-75"></i>
@@ -120,13 +116,13 @@
     </div>
     
     <div class="col-md-3">
-        <div class="card bg-gradient-warning text-white">
+        <div class="card bg-success text-white">
             <div class="card-body">
                 <div class="d-flex justify-content-between">
                     <div>
                         <h6 class="card-title">Vacinações</h6>
-                        <h2 class="mb-0">0</h2>
-                        <small><i class="fas fa-syringe me-1"></i>Realizadas</small>
+                        <h2 class="mb-0">{{ vacinacoes_mes }}</h2>
+                        <small><i class="fas fa-syringe me-1"></i>Este mês</small>
                     </div>
                     <div class="align-self-center">
                         <i class="fas fa-shield-alt fa-2x opacity-75"></i>
@@ -137,12 +133,12 @@
     </div>
     
     <div class="col-md-3">
-        <div class="card bg-gradient-danger text-white">
+        <div class="card bg-info text-white">
             <div class="card-body">
                 <div class="d-flex justify-content-between">
                     <div>
                         <h6 class="card-title">Gastos do Mês</h6>
-                        <h2 class="mb-0">R$ 0</h2>
+                        <h2 class="mb-0">R$ {{ gastos_mes|floatformat:2 }}</h2>
                         <small><i class="fas fa-dollar-sign me-1"></i>Total investido</small>
                     </div>
                     <div class="align-self-center">
@@ -154,12 +150,12 @@
     </div>
     
     <div class="col-md-3">
-        <div class="card bg-gradient-dark text-white">
+        <div class="card bg-warning text-white">
             <div class="card-body">
                 <div class="d-flex justify-content-between">
                     <div>
                         <h6 class="card-title">Produtividade</h6>
-                        <h2 class="mb-0">0%</h2>
+                        <h2 class="mb-0">{{ produtividade_porcentagem|floatformat:0 }}%</h2>
                         <small><i class="fas fa-chart-line me-1"></i>Meta mensal</small>
                     </div>
                     <div class="align-self-center">
@@ -171,14 +167,14 @@
     </div>
 </div>
 
-<!-- Recent Reports Section -->
-<div class="row">
+<!-- Recent Activities Section -->
+<div class="row mb-5">
     <div class="col-12">
         <div class="card shadow">
-            <div class="card-header bg-dark text-white">
+            <div class="card-header bg-primary text-white">
                 <h5 class="card-title mb-0">
-                    <i class="fas fa-history me-2"></i>
-                    Relatórios Recentes
+                    <i class="fas fa-clock me-2"></i>
+                    Atividades Recentes
                 </h5>
             </div>
             <div class="card-body">
@@ -186,21 +182,69 @@
                     <table class="table table-hover">
                         <thead class="table-light">
                             <tr>
-                                <th><i class="fas fa-file-alt me-2"></i>Relatório</th>
-                                <th><i class="fas fa-calendar me-2"></i>Data de Geração</th>
-                                <th><i class="fas fa-user me-2"></i>Gerado por</th>
-                                <th><i class="fas fa-download me-2"></i>Status</th>
-                                <th><i class="fas fa-cogs me-2"></i>Ações</th>
+                                <th><i class="fas fa-tag me-2"></i>Tipo</th>
+                                <th><i class="fas fa-info-circle me-2"></i>Atividade</th>
+                                <th><i class="fas fa-calendar me-2"></i>Data</th>
+                                <th><i class="fas fa-map-marker-alt me-2"></i>Fazenda</th>
+                                <th><i class="fas fa-info me-2"></i>Detalhes</th>
                             </tr>
                         </thead>
                         <tbody>
+                            {% for atividade in atividades_recentes %}
                             <tr>
-                                <td colspan="5" class="text-center py-4">
-                                    <i class="fas fa-file-excel fa-3x text-muted mb-3"></i>
-                                    <h6 class="text-muted">Nenhum relatório gerado ainda</h6>
-                                    <p class="text-muted">Os relatórios aparecerão aqui após serem gerados.</p>
+                                <td>
+                                    {% if atividade.tipo == 'criacao_lote' or atividade.tipo == 'lote' %}
+                                        <span class="badge bg-info">
+                                            <i class="fas fa-th-large me-1"></i>Criação de Lote
+                                        </span>
+                                    {% elif atividade.tipo == 'vacinacao' %}
+                                        <span class="badge bg-warning">
+                                            <i class="fas fa-syringe me-1"></i>Vacinação
+                                        </span>
+                                    {% elif atividade.tipo == 'movimentacao_estoque' %}
+                                        <span class="badge bg-primary">
+                                            <i class="fas fa-exchange-alt me-1"></i>Movimentação
+                                        </span>
+                                    {% elif atividade.tipo == 'entrada_animal' %}
+                                        <span class="badge bg-success">
+                                            <i class="fas fa-cow me-1"></i>Entrada Animal
+                                        </span>
+                                    {% elif atividade.tipo == 'animal' %}
+                                        <span class="badge bg-success">
+                                            <i class="fas fa-cow me-1"></i>Animal
+                                        </span>
+                                    {% elif atividade.tipo == 'produto' %}
+                                        <span class="badge bg-secondary">
+                                            <i class="fas fa-box me-1"></i>Produto
+                                        </span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <strong>{{ atividade.nome }}</strong>
+                                </td>
+                                <td>
+                                    {% if atividade.data %}
+                                        {{ atividade.data|date:"d/m/Y" }}
+                                    {% else %}
+                                        N/A
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {{ atividade.fazenda }}
+                                </td>
+                                <td>
+                                    <small class="text-muted">{{ atividade.descricao }}</small>
                                 </td>
                             </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="5" class="text-center py-4">
+                                    <i class="fas fa-clock fa-3x text-muted mb-3"></i>
+                                    <h6 class="text-muted">Nenhuma atividade recente</h6>
+                                    <p class="text-muted small">As atividades aparecerão aqui conforme você criar lotes, vacinar animais e movimentar estoque.</p>
+                                </td>
+                            </tr>
+                            {% endfor %}
                         </tbody>
                     </table>
                 </div>
@@ -211,30 +255,6 @@
 
 <!-- Custom Styles for Reports -->
 <style>
-.bg-gradient-primary {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-}
-
-.bg-gradient-success {
-    background: linear-gradient(135deg, #2af598 0%, #009efd 100%);
-}
-
-.bg-gradient-info {
-    background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
-}
-
-.bg-gradient-warning {
-    background: linear-gradient(135deg, #fdcb6e 0%, #e17055 100%);
-}
-
-.bg-gradient-danger {
-    background: linear-gradient(135deg, #fd79a8 0%, #e84393 100%);
-}
-
-.bg-gradient-dark {
-    background: linear-gradient(135deg, #636e72 0%, #2d3436 100%);
-}
-
 .report-card:hover {
     transform: translateY(-5px);
     transition: transform 0.3s ease;
@@ -243,6 +263,19 @@
 
 .card {
     transition: all 0.3s ease;
+}
+
+/* Efeitos hover para os botões dos relatórios */
+.report-card .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    transition: all 0.3s ease;
+}
+
+/* Gradientes mais suaves para os headers */
+.card-header {
+    border: none;
+    font-weight: 600;
 }
 </style>
 

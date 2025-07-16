@@ -66,16 +66,10 @@
                             </div>
                             
                             <div class="row">
-                                <div class="col-6 text-center">
+                                <div class="col-12 text-center">
                                     <div class="bg-success bg-opacity-10 p-2 rounded">
-                                        <h5 class="text-success mb-0">{{ item.gado_corte }}</h5>
-                                        <small class="text-muted">Corte</small>
-                                    </div>
-                                </div>
-                                <div class="col-6 text-center">
-                                    <div class="bg-info bg-opacity-10 p-2 rounded">
-                                        <h5 class="text-info mb-0">{{ item.gado_leite }}</h5>
-                                        <small class="text-muted">Leite</small>
+                                        <h5 class="text-success mb-0">{{ item.total_animais }}</h5>
+                                        <small class="text-muted">Gado de Corte</small>
                                     </div>
                                 </div>
                             </div>
@@ -84,39 +78,44 @@
                             
                             <div class="row text-center">
                                 {% if item.piquete.area %}
-                                <div class="col-6">
+                                <div class="col-12">
                                     <small class="text-muted">Área:</small><br>
                                     <strong>{{ item.piquete.area }} ha</strong>
-                                </div>
-                                {% endif %}
-                                {% if item.piquete.capacidade_maxima %}
-                                <div class="col-6">
-                                    <small class="text-muted">Capacidade:</small><br>
-                                    <strong>{{ item.piquete.capacidade_maxima }}</strong>
-                                    {% if item.total_animais > item.piquete.capacidade_maxima %}
-                                        <span class="text-danger">
-                                            <i class="fas fa-exclamation-triangle" title="Acima da capacidade!"></i>
-                                        </span>
-                                    {% endif %}
                                 </div>
                                 {% endif %}
                             </div>
                         </div>
                         <div class="card-footer">
-                            <div class="btn-group w-100" role="group">
-                                <a href="{% url 'lista_animais' %}?piquete={{ item.piquete.id }}" 
-                                   class="btn btn-outline-primary btn-sm">
-                                    <i class="fas fa-eye"></i> Ver
-                                </a>
-                                <a href="{% url 'mover_animais' %}?piquete={{ item.piquete.id }}" 
-                                   class="btn btn-outline-info btn-sm">
-                                    <i class="fas fa-exchange-alt"></i> Mover
-                                </a>
-                                <a href="{% url 'adicionar_animal' %}?piquete={{ item.piquete.id }}" 
-                                   class="btn btn-outline-success btn-sm">
-                                    <i class="fas fa-plus"></i> Animal
-                                </a>
+                                                    <div class="btn-group w-100" role="group">
+                            <a href="{% url 'lista_animais' %}?piquete={{ item.piquete.id }}" 
+                               class="btn btn-outline-primary btn-sm">
+                                <i class="fas fa-eye"></i> Ver
+                            </a>
+                            <a href="{% url 'mover_animais' %}?piquete={{ item.piquete.id }}" 
+                               class="btn btn-outline-info btn-sm">
+                                <i class="fas fa-exchange-alt"></i> Mover
+                            </a>
+                            <div class="btn-group" role="group">
+                                <button type="button" class="btn btn-outline-secondary btn-sm dropdown-toggle" 
+                                        data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fas fa-cog"></i>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end">
+                                    <li>
+                                        <a class="dropdown-item" href="{% url 'editar_piquete' item.piquete.id %}?next={{ request.get_full_path|urlencode }}&fazenda={{ request.GET.fazenda|default:item.piquete.fazenda.id }}">
+                                            <i class="fas fa-edit me-2"></i>Editar Área
+                                        </a>
+                                    </li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li>
+                                        <a class="dropdown-item text-danger" href="#" 
+                                           onclick="deletarPiquete({{ item.piquete.id }}, '{{ item.piquete.nome }}')">
+                                            <i class="fas fa-trash me-2"></i>Excluir Lote
+                                        </a>
+                                    </li>
+                                </ul>
                             </div>
+                        </div>
                         </div>
                     </div>
                 </div>
@@ -151,29 +150,17 @@
                             </h4>
                             <p class="text-muted">Total de Animais</p>
                         </div>
-                        <div class="col-md-3">
-                            <h4 class="text-info">
+                        <div class="col-md-6">
+                            <h4 class="text-success">
                                 {% with total_corte=0 %}
                                     {% for item in piquetes_data %}
-                                        {% with total_corte=total_corte|add:item.gado_corte %}
+                                        {% with total_corte=total_corte|add:item.total_animais %}
                                         {% endwith %}
                                     {% endfor %}
                                     {{ total_corte }}
                                 {% endwith %}
                             </h4>
                             <p class="text-muted">Gado de Corte</p>
-                        </div>
-                        <div class="col-md-3">
-                            <h4 class="text-warning">
-                                {% with total_leite=0 %}
-                                    {% for item in piquetes_data %}
-                                        {% with total_leite=total_leite|add:item.gado_leite %}
-                                        {% endwith %}
-                                    {% endfor %}
-                                    {{ total_leite }}
-                                {% endwith %}
-                            </h4>
-                            <p class="text-muted">Gado Leiteiro</p>
                         </div>
                     </div>
                 </div>
@@ -196,4 +183,32 @@
         {% endif %}
     </div>
 </div>
+
+<script>
+function deletarPiquete(id, nome) {
+    if (confirm(`Tem certeza que deseja excluir o lote "${nome}"?\n\nATENÇÃO: Esta ação não pode ser desfeita e todos os animais do lote serão movidos para "Sem Lote".`)) {
+        fetch(`/fazendascdst/lotes/deletar/${id}/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+                'Content-Type': 'application/json',
+            },
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                location.reload();
+            } else {
+                alert('Erro: ' + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Erro:', error);
+            alert('Erro ao excluir lote');
+        });
+    }
+}
+</script>
+
+{% csrf_token %}
 {% endblock %}

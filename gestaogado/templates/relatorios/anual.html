@@ -13,7 +13,7 @@
                     <i class="fas fa-chart-area me-3"></i>
                     Relatório Anual
                 </h1>
-                <p class="text-muted mb-0">Ano: {% now "Y" %}</p>
+                <p class="text-muted mb-0">Ano: {{ ano_atual }}</p>
             </div>
             <div class="btn-group" role="group">
                 <a href="{% url 'exportar_pdf_anual' %}" class="btn btn-outline-danger">
@@ -33,7 +33,7 @@
         <div class="card bg-gradient-primary text-white h-100">
             <div class="card-body text-center">
                 <i class="fas fa-cow fa-2x mb-3"></i>
-                <h3 class="mb-1">0</h3>
+                <h3 class="mb-1">{{ total_animais_ano }}</h3>
                 <p class="mb-0 small">Total de Animais</p>
             </div>
         </div>
@@ -43,7 +43,7 @@
         <div class="card bg-gradient-success text-white h-100">
             <div class="card-body text-center">
                 <i class="fas fa-syringe fa-2x mb-3"></i>
-                <h3 class="mb-1">0</h3>
+                <h3 class="mb-1">{{ total_vacinacoes_ano }}</h3>
                 <p class="mb-0 small">Vacinações</p>
             </div>
         </div>
@@ -53,18 +53,8 @@
         <div class="card bg-gradient-warning text-white h-100">
             <div class="card-body text-center">
                 <i class="fas fa-dollar-sign fa-2x mb-3"></i>
-                <h3 class="mb-1">R$ 0</h3>
+                <h3 class="mb-1">R$ {{ investimento_total|floatformat:2 }}</h3>
                 <p class="mb-0 small">Investimento Total</p>
-            </div>
-        </div>
-    </div>
-    
-    <div class="col-lg-2 col-md-4 col-sm-6">
-        <div class="card bg-gradient-info text-white h-100">
-            <div class="card-body text-center">
-                <i class="fas fa-chart-line fa-2x mb-3"></i>
-                <h3 class="mb-1">0%</h3>
-                <p class="mb-0 small">Crescimento</p>
             </div>
         </div>
     </div>
@@ -73,7 +63,7 @@
         <div class="card bg-gradient-danger text-white h-100">
             <div class="card-body text-center">
                 <i class="fas fa-boxes fa-2x mb-3"></i>
-                <h3 class="mb-1">0</h3>
+                <h3 class="mb-1">{{ total_produtos_estoque }}</h3>
                 <p class="mb-0 small">Produtos Estoque</p>
             </div>
         </div>
@@ -83,216 +73,8 @@
         <div class="card bg-gradient-dark text-white h-100">
             <div class="card-body text-center">
                 <i class="fas fa-map-marker-alt fa-2x mb-3"></i>
-                <h3 class="mb-1">0</h3>
+                <h3 class="mb-1">{{ total_fazendas_ativas }}</h3>
                 <p class="mb-0 small">Fazendas Ativas</p>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Annual Performance Chart -->
-<div class="row mb-5">
-    <div class="col-12">
-        <div class="card shadow">
-            <div class="card-header bg-primary text-white">
-                <h5 class="card-title mb-0">
-                    <i class="fas fa-chart-area me-2"></i>
-                    Performance Anual - Evolução Mensal
-                </h5>
-            </div>
-            <div class="card-body">
-                <div class="chart-container" style="height: 400px;">
-                    <div class="d-flex align-items-center justify-content-center h-100">
-                        <div class="text-center">
-                            <i class="fas fa-chart-area fa-4x text-muted mb-3"></i>
-                            <h5 class="text-muted">Gráfico de Performance Anual</h5>
-                            <p class="text-muted">Visualização da evolução mensal do rebanho, vacinações e investimentos.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Quarterly Analysis -->
-<div class="row g-4 mb-5">
-    <div class="col-lg-6">
-        <div class="card shadow h-100">
-            <div class="card-header bg-success text-white">
-                <h5 class="card-title mb-0">
-                    <i class="fas fa-chart-bar me-2"></i>
-                    Análise Trimestral
-                </h5>
-            </div>
-            <div class="card-body">
-                <div class="table-responsive">
-                    <table class="table table-hover">
-                        <thead class="table-light">
-                            <tr>
-                                <th>Trimestre</th>
-                                <th>Animais</th>
-                                <th>Vacinações</th>
-                                <th>Investimento</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td><strong>Q1</strong> <small class="text-muted">(Jan-Mar)</small></td>
-                                <td><span class="badge bg-primary">0</span></td>
-                                <td><span class="badge bg-success">0</span></td>
-                                <td><span class="text-success fw-bold">R$ 0</span></td>
-                            </tr>
-                            <tr>
-                                <td><strong>Q2</strong> <small class="text-muted">(Abr-Jun)</small></td>
-                                <td><span class="badge bg-primary">0</span></td>
-                                <td><span class="badge bg-success">0</span></td>
-                                <td><span class="text-success fw-bold">R$ 0</span></td>
-                            </tr>
-                            <tr>
-                                <td><strong>Q3</strong> <small class="text-muted">(Jul-Set)</small></td>
-                                <td><span class="badge bg-primary">0</span></td>
-                                <td><span class="badge bg-success">0</span></td>
-                                <td><span class="text-success fw-bold">R$ 0</span></td>
-                            </tr>
-                            <tr>
-                                <td><strong>Q4</strong> <small class="text-muted">(Out-Dez)</small></td>
-                                <td><span class="badge bg-primary">0</span></td>
-                                <td><span class="badge bg-success">0</span></td>
-                                <td><span class="text-success fw-bold">R$ 0</span></td>
-                            </tr>
-                        </tbody>
-                        <tfoot class="table-dark">
-                            <tr>
-                                <th>Total Anual</th>
-                                <th><span class="badge bg-light text-dark">0</span></th>
-                                <th><span class="badge bg-light text-dark">0</span></th>
-                                <th><span class="text-light fw-bold">R$ 0</span></th>
-                            </tr>
-                        </tfoot>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <div class="col-lg-6">
-        <div class="card shadow h-100">
-            <div class="card-header bg-warning text-white">
-                <h5 class="card-title mb-0">
-                    <i class="fas fa-chart-pie me-2"></i>
-                    Distribuição de Investimentos
-                </h5>
-            </div>
-            <div class="card-body">
-                <div class="chart-container" style="height: 300px;">
-                    <div class="d-flex align-items-center justify-content-center h-100">
-                        <div class="text-center">
-                            <i class="fas fa-chart-pie fa-3x text-muted mb-3"></i>
-                            <h6 class="text-muted">Gráfico de Investimentos</h6>
-                            <p class="text-muted">Distribuição por categoria:<br>
-                            Ração, Medicamentos, Equipamentos</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Annual Goals and Targets -->
-<div class="row g-4 mb-5">
-    <div class="col-lg-4">
-        <div class="card shadow h-100">
-            <div class="card-header bg-info text-white">
-                <h5 class="card-title mb-0">
-                    <i class="fas fa-bullseye me-2"></i>
-                    Metas Atingidas
-                </h5>
-            </div>
-            <div class="card-body">
-                <div class="mb-3">
-                    <div class="d-flex justify-content-between mb-1">
-                        <span class="small">Crescimento do Rebanho</span>
-                        <span class="small fw-bold">0%</span>
-                    </div>
-                    <div class="progress">
-                        <div class="progress-bar bg-success" style="width: 0%"></div>
-                    </div>
-                </div>
-                
-                <div class="mb-3">
-                    <div class="d-flex justify-content-between mb-1">
-                        <span class="small">Programa de Vacinação</span>
-                        <span class="small fw-bold">0%</span>
-                    </div>
-                    <div class="progress">
-                        <div class="progress-bar bg-warning" style="width: 0%"></div>
-                    </div>
-                </div>
-                
-                <div class="mb-3">
-                    <div class="d-flex justify-content-between mb-1">
-                        <span class="small">Controle de Estoque</span>
-                        <span class="small fw-bold">0%</span>
-                    </div>
-                    <div class="progress">
-                        <div class="progress-bar bg-info" style="width: 0%"></div>
-                    </div>
-                </div>
-                
-                <div class="mb-0">
-                    <div class="d-flex justify-content-between mb-1">
-                        <span class="small">ROI (Retorno de Investimento)</span>
-                        <span class="small fw-bold">0%</span>
-                    </div>
-                    <div class="progress">
-                        <div class="progress-bar bg-danger" style="width: 0%"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <div class="col-lg-8">
-        <div class="card shadow h-100">
-            <div class="card-header bg-dark text-white">
-                <h5 class="card-title mb-0">
-                    <i class="fas fa-trophy me-2"></i>
-                    Principais Conquistas do Ano
-                </h5>
-            </div>
-            <div class="card-body">
-                <div class="row text-center">
-                    <div class="col-md-6 mb-4">
-                        <div class="achievement-item">
-                            <i class="fas fa-award fa-3x text-warning mb-2"></i>
-                            <h6>Rebanho Saudável</h6>
-                            <p class="text-muted small">100% dos animais vacinados no prazo</p>
-                        </div>
-                    </div>
-                    <div class="col-md-6 mb-4">
-                        <div class="achievement-item">
-                            <i class="fas fa-chart-line fa-3x text-success mb-2"></i>
-                            <h6>Crescimento Consistente</h6>
-                            <p class="text-muted small">Meta de crescimento anual atingida</p>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="achievement-item">
-                            <i class="fas fa-shield-alt fa-3x text-primary mb-2"></i>
-                            <h6>Zero Mortalidade</h6>
-                            <p class="text-muted small">Nenhuma perda no rebanho este ano</p>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="achievement-item">
-                            <i class="fas fa-leaf fa-3x text-info mb-2"></i>
-                            <h6>Sustentabilidade</h6>
-                            <p class="text-muted small">Práticas sustentáveis implementadas</p>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
     </div>
@@ -323,26 +105,39 @@
                             </tr>
                         </thead>
                         <tbody>
-                            {% for month in "123456789012"|make_list %}
+                            {% for dados in dados_por_mes %}
                             <tr>
-                                <td><strong>{% cycle "Janeiro" "Fevereiro" "Março" "Abril" "Maio" "Junho" "Julho" "Agosto" "Setembro" "Outubro" "Novembro" "Dezembro" %}</strong></td>
-                                <td><span class="badge bg-primary">0</span></td>
-                                <td><span class="badge bg-success">0</span></td>
-                                <td><span class="text-success">R$ 0</span></td>
+                                <td><strong>{{ dados.nome_mes }}</strong></td>
+                                <td><span class="badge bg-primary">{{ dados.animais }}</span></td>
+                                <td><span class="badge bg-success">{{ dados.vacinacoes }}</span></td>
+                                <td><span class="text-success">R$ {{ dados.gastos|floatformat:2 }}</span></td>
                                 <td><span class="text-warning">R$ 0</span></td>
-                                <td><span class="fw-bold">R$ 0</span></td>
-                                <td><small class="text-muted">-</small></td>
+                                <td><span class="fw-bold">R$ {{ dados.gastos|floatformat:2 }}</span></td>
+                                <td>
+                                    <small class="text-muted" id="obs-{{ dados.mes }}">
+                                        {% if dados.observacao %}
+                                            {{ dados.observacao|truncatechars:30 }}
+                                        {% else %}
+                                            -
+                                        {% endif %}
+                                    </small>
+                                    <button type="button" class="btn btn-sm btn-outline-primary ms-1" 
+                                            onclick="editarObservacao({{ ano_atual }}, {{ dados.mes }}, '{{ dados.nome_mes }}')"
+                                            title="Editar observação">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                </td>
                             </tr>
                             {% endfor %}
                         </tbody>
                         <tfoot class="table-dark">
                             <tr>
                                 <th>TOTAL ANUAL</th>
-                                <th><span class="badge bg-light text-dark">0</span></th>
-                                <th><span class="badge bg-light text-dark">0</span></th>
+                                <th><span class="badge bg-light text-dark">{{ total_animais_ano }}</span></th>
+                                <th><span class="badge bg-light text-dark">{{ total_vacinacoes_ano }}</span></th>
+                                <th><span class="text-light">R$ {{ investimento_total|floatformat:2 }}</span></th>
                                 <th><span class="text-light">R$ 0</span></th>
-                                <th><span class="text-light">R$ 0</span></th>
-                                <th><span class="text-light fw-bold">R$ 0</span></th>
+                                <th><span class="text-light fw-bold">R$ {{ investimento_total|floatformat:2 }}</span></th>
                                 <th><span class="text-light">-</span></th>
                             </tr>
                         </tfoot>
@@ -353,31 +148,7 @@
     </div>
 </div>
 
-<!-- Export Section -->
-<div class="row">
-    <div class="col-12">
-        <div class="card shadow">
-            <div class="card-body text-center">
-                <h5 class="mb-3">Exportar Relatório Anual</h5>
-                <p class="text-muted mb-4">Baixe o relatório completo em diferentes formatos</p>
-                <div class="btn-group btn-group-lg" role="group">
-                    <button type="button" class="btn btn-success">
-                        <i class="fas fa-file-excel me-2"></i>Excel Completo
-                    </button>
-                    <button type="button" class="btn btn-danger">
-                        <i class="fas fa-file-pdf me-2"></i>PDF Executivo
-                    </button>
-                    <button type="button" class="btn btn-primary">
-                        <i class="fas fa-print me-2"></i>Imprimir
-                    </button>
-                    <button type="button" class="btn btn-info">
-                        <i class="fas fa-envelope me-2"></i>Enviar por Email
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+
 
 <!-- Back Navigation -->
 <div class="row mt-4">
@@ -385,6 +156,43 @@
         <a href="{% url 'relatorios_index' %}" class="btn btn-outline-secondary">
             <i class="fas fa-arrow-left me-2"></i>Voltar aos Relatórios
         </a>
+    </div>
+</div>
+
+{% csrf_token %}
+<!-- Modal para Editar Observação -->
+<div class="modal fade" id="modalObservacao" tabindex="-1" aria-labelledby="modalObservacaoLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalObservacaoLabel">
+                    <i class="fas fa-edit me-2"></i>Editar Observação
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="formObservacao">
+                    <div class="mb-3">
+                        <label for="observacao" class="form-label">
+                            <i class="fas fa-comment me-1"></i>Observação para <span id="mesObservacao"></span>
+                        </label>
+                        <textarea class="form-control" id="observacao" name="observacao" rows="4" 
+                                  maxlength="500" placeholder="Digite suas observações sobre este mês..."></textarea>
+                        <div class="form-text">
+                            <span id="contadorCaracteres">0</span>/500 caracteres
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-1"></i>Cancelar
+                </button>
+                <button type="button" class="btn btn-primary" onclick="salvarObservacao()">
+                    <i class="fas fa-save me-1"></i>Salvar
+                </button>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -426,5 +234,98 @@
     background: rgba(0,0,0,0.05);
 }
 </style>
+
+<script>
+let anoAtual = {{ ano_atual }};
+let mesAtual = null;
+
+// Função para abrir modal de edição de observação
+function editarObservacao(ano, mes, nomeMes) {
+    anoAtual = ano;
+    mesAtual = mes;
+    
+    // Atualizar título do modal
+    document.getElementById('mesObservacao').textContent = nomeMes;
+    
+    // Buscar observação atual via AJAX
+    fetch(`/relatorios/observacao/${ano}/${mes}/`)
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('observacao').value = data.observacao;
+            atualizarContadorCaracteres();
+        })
+        .catch(error => {
+            console.error('Erro ao buscar observação:', error);
+            document.getElementById('observacao').value = '';
+            atualizarContadorCaracteres();
+        });
+    
+    // Abrir modal
+    const modal = new bootstrap.Modal(document.getElementById('modalObservacao'));
+    modal.show();
+}
+
+// Função para salvar observação
+function salvarObservacao() {
+    const observacao = document.getElementById('observacao').value;
+    
+    fetch(`/relatorios/observacao/${anoAtual}/${mesAtual}/`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+        },
+        body: `observacao=${encodeURIComponent(observacao)}`
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Atualizar texto na tabela
+            const obsElement = document.getElementById(`obs-${mesAtual}`);
+            if (observacao.trim()) {
+                obsElement.textContent = observacao.length > 30 ? 
+                    observacao.substring(0, 30) + '...' : observacao;
+            } else {
+                obsElement.textContent = '-';
+            }
+            
+            // Fechar modal
+            const modal = bootstrap.Modal.getInstance(document.getElementById('modalObservacao'));
+            modal.hide();
+            
+            // Mostrar mensagem de sucesso
+            alert('Observação salva com sucesso!');
+        } else {
+            alert('Erro ao salvar observação: ' + data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Erro ao salvar observação:', error);
+        alert('Erro ao salvar observação. Tente novamente.');
+    });
+}
+
+// Função para atualizar contador de caracteres
+function atualizarContadorCaracteres() {
+    const textarea = document.getElementById('observacao');
+    const contador = document.getElementById('contadorCaracteres');
+    contador.textContent = textarea.value.length;
+    
+    // Mudar cor se estiver próximo do limite
+    if (textarea.value.length > 450) {
+        contador.style.color = '#dc3545';
+    } else if (textarea.value.length > 400) {
+        contador.style.color = '#ffc107';
+    } else {
+        contador.style.color = '#6c757d';
+    }
+}
+
+// Event listener para contador de caracteres
+document.addEventListener('DOMContentLoaded', function() {
+    const textarea = document.getElementById('observacao');
+    textarea.addEventListener('input', atualizarContadorCaracteres);
+});
+</script>
 
 {% endblock %}

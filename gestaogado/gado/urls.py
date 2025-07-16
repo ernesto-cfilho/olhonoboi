@@ -14,6 +14,8 @@ urlpatterns = [
     # URLs para vacinas
     path('vacinas/', views.lista_vacinas, name='lista_vacinas'),
     path('vacinas/adicionar/', views.adicionar_vacina, name='adicionar_vacina'),
+    path('vacinas/editar/<int:vacina_id>/', views.editar_vacina, name='editar_vacina'),
+    path('vacinas/excluir/<int:vacina_id>/', views.excluir_vacina, name='excluir_vacina'),
     
     # URLs para vacinações
     path('vacinacoes/', views.lista_vacinacoes, name='lista_vacinacoes'),
@@ -26,4 +28,5 @@ urlpatterns = [
     
     # AJAX URLs
     path('ajax/lotes/', views.get_lotes_by_fazenda, name='get_lotes_by_fazenda'),
+    path('excluir-animais-lote/', views.excluir_animais_lote, name='excluir_animais_lote'),
 ]

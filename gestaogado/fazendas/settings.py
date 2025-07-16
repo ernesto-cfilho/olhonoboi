@@ -135,3 +135,18 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
+
+# Configurações para formulários com muitos campos
+DATA_UPLOAD_MAX_NUMBER_FIELDS = 10000  # Aumentar limite de campos
+DATA_UPLOAD_MAX_MEMORY_SIZE = 10485760  # 10MB para upload de dados
+
+# Configurações de CSRF
+CSRF_COOKIE_SECURE = False  # Para desenvolvimento
+CSRF_COOKIE_HTTPONLY = False  # Permite acesso via JavaScript se necessário
+CSRF_USE_SESSIONS = True  # Usa sessões para armazenar tokens CSRF
+CSRF_COOKIE_SAMESITE = 'Lax'  # Política de SameSite
+
+# Configurações de sessão
+SESSION_COOKIE_AGE = 3600  # 1 hora
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False
+SESSION_SAVE_EVERY_REQUEST = True  # Salva a sessão a cada requisição

@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-4">
+    <h2>Registrar Movimentação de Lote</h2>
+    <form method="post">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="lote" class="form-label">Lote</label>
+            <select class="form-select" id="lote" name="lote" required>
+                <option value="">Selecione o lote</option>
+                {% for lote in lotes %}
+                    <option value="{{ lote.id }}">{{ lote.nome }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="mb-3">
+            <label for="tipo" class="form-label">Tipo de Movimentação</label>
+            <select class="form-select" id="tipo" name="tipo" required>
+                <option value="entrada">Entrada</option>
+                <option value="saida">Saída</option>
+                <option value="baixa">Baixa</option>
+            </select>
+        </div>
+        <div class="mb-3">
+            <label for="quantidade" class="form-label">Quantidade</label>
+            <input type="number" class="form-control" id="quantidade" name="quantidade" min="1" required>
+        </div>
+        <div class="mb-3">
+            <label for="peso_medio" class="form-label">Peso Médio (kg)</label>
+            <input type="number" step="0.01" class="form-control" id="peso_medio" name="peso_medio" required>
+        </div>
+        <div class="mb-3">
+            <label for="data" class="form-label">Data</label>
+            <input type="date" class="form-control" id="data" name="data" value="{{ today|default:'' }}">
+        </div>
+        <div class="mb-3">
+            <label for="motivo" class="form-label">Motivo (para baixa)</label>
+            <input type="text" class="form-control" id="motivo" name="motivo">
+        </div>
+        <div class="mb-3">
+            <label for="obs_manejo" class="form-label">Observação de Manejo</label>
+            <input type="text" class="form-control" id="obs_manejo" name="obs_manejo">
+        </div>
+        <button type="submit" class="btn btn-primary">Registrar Movimentação</button>
+        <a href="{% url 'historico_movimentacao_lote' %}" class="btn btn-secondary">Ver Histórico</a>
+    </form>
+</div>
+{% endblock %} 

@@ -4,6 +4,7 @@
 {% block title %}Relatório Mensal{% endblock %}
 
 {% block content %}
+{% csrf_token %}
 <!-- Header with Date Selector -->
 <div class="row">
     <div class="col-12">
@@ -13,7 +14,7 @@
                     <i class="fas fa-calendar-alt me-3"></i>
                     Relatório Mensal
                 </h1>
-                <p class="text-muted mb-0">Período: {% now "F Y" %}</p>
+                <p class="text-muted mb-0">Período: {{ mes_atual }}</p>
             </div>
             <div class="btn-group" role="group">
                 <a href="{% url 'exportar_pdf_mensal' %}" class="btn btn-outline-danger">
@@ -35,8 +36,8 @@
                 <div class="d-flex justify-content-between">
                     <div>
                         <h6 class="card-title">Rebanho Total</h6>
-                        <h2 class="mb-0">0</h2>
-                        <small><i class="fas fa-arrow-up me-1"></i>+0 este mês</small>
+                        <h2 class="mb-0">{{ total_animais_mes }}</h2>
+                        <small><i class="fas fa-arrow-up me-1"></i>+{{ total_animais_mes }} este mês</small>
                     </div>
                     <div class="align-self-center">
                         <i class="fas fa-cow fa-3x opacity-75"></i>
@@ -52,7 +53,7 @@
                 <div class="d-flex justify-content-between">
                     <div>
                         <h6 class="card-title">Vacinações</h6>
-                        <h2 class="mb-0">0</h2>
+                        <h2 class="mb-0">{{ total_vacinacoes_mes }}</h2>
                         <small><i class="fas fa-syringe me-1"></i>Realizadas</small>
                     </div>
                     <div class="align-self-center">
@@ -69,75 +70,11 @@
                 <div class="d-flex justify-content-between">
                     <div>
                         <h6 class="card-title">Investimentos</h6>
-                        <h2 class="mb-0">R$ 0</h2>
+                        <h2 class="mb-0">R$ {{ investimentos_mes|floatformat:2 }}</h2>
                         <small><i class="fas fa-money-bill-wave me-1"></i>Total gasto</small>
                     </div>
                     <div class="align-self-center">
                         <i class="fas fa-dollar-sign fa-3x opacity-75"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <div class="col-lg-3 col-md-6">
-        <div class="card bg-info text-white h-100">
-            <div class="card-body">
-                <div class="d-flex justify-content-between">
-                    <div>
-                        <h6 class="card-title">Eficiência</h6>
-                        <h2 class="mb-0">0%</h2>
-                        <small><i class="fas fa-chart-line me-1"></i>vs Meta</small>
-                    </div>
-                    <div class="align-self-center">
-                        <i class="fas fa-target fa-3x opacity-75"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Charts Row -->
-<div class="row g-4 mb-5">
-    <div class="col-lg-8">
-        <div class="card shadow h-100">
-            <div class="card-header bg-primary text-white">
-                <h5 class="card-title mb-0">
-                    <i class="fas fa-chart-line me-2"></i>
-                    Evolução do Rebanho - Últimos 6 Meses
-                </h5>
-            </div>
-            <div class="card-body">
-                <div class="chart-container" style="height: 300px;">
-                    <div class="d-flex align-items-center justify-content-center h-100">
-                        <div class="text-center">
-                            <i class="fas fa-chart-line fa-3x text-muted mb-3"></i>
-                            <h6 class="text-muted">Gráfico de Evolução</h6>
-                            <p class="text-muted">Os dados serão exibidos aqui conforme você adiciona animais.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <div class="col-lg-4">
-        <div class="card shadow h-100">
-            <div class="card-header bg-success text-white">
-                <h5 class="card-title mb-0">
-                    <i class="fas fa-chart-pie me-2"></i>
-                    Distribuição de Gastos
-                </h5>
-            </div>
-            <div class="card-body">
-                <div class="chart-container" style="height: 300px;">
-                    <div class="d-flex align-items-center justify-content-center h-100">
-                        <div class="text-center">
-                            <i class="fas fa-chart-pie fa-3x text-muted mb-3"></i>
-                            <h6 class="text-muted">Gráfico de Pizza</h6>
-                            <p class="text-muted">Distribuição de gastos por categoria.</p>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -156,7 +93,7 @@
                 </h5>
             </div>
             <div class="card-body">
-                <div class="table-responsive">
+                <div class="table-responsive" style="max-height: 250px; overflow-y: auto;">
                     <table class="table table-hover">
                         <thead class="table-light">
                             <tr>
@@ -167,12 +104,21 @@
                             </tr>
                         </thead>
                         <tbody>
+                            {% for animal in animais_mes %}
+                            <tr>
+                                <td>{{ animal.identificador|default:"SN" }}</td>
+                                <td>{{ animal.data_entrada|date:"d/m/Y" }}</td>
+                                <td>{{ animal.peso|floatformat:1 }}kg</td>
+                                <td>{{ animal.fazenda.nome }}</td>
+                            </tr>
+                            {% empty %}
                             <tr>
                                 <td colspan="4" class="text-center py-4">
                                     <i class="fas fa-cow fa-2x text-muted mb-2"></i>
                                     <p class="text-muted mb-0">Nenhum animal adicionado este mês</p>
                                 </td>
                             </tr>
+                            {% endfor %}
                         </tbody>
                     </table>
                 </div>
@@ -189,7 +135,7 @@
                 </h5>
             </div>
             <div class="card-body">
-                <div class="table-responsive">
+                <div class="table-responsive" style="max-height: 250px; overflow-y: auto;">
                     <table class="table table-hover">
                         <thead class="table-light">
                             <tr>
@@ -200,12 +146,21 @@
                             </tr>
                         </thead>
                         <tbody>
+                            {% for vacinacao in vacinacoes_mes %}
+                            <tr>
+                                <td>{{ vacinacao.animal.identificador|default:"SN" }}</td>
+                                <td>{{ vacinacao.vacina.nome }}</td>
+                                <td>{{ vacinacao.data_de_aplicacao|date:"d/m/Y" }}</td>
+                                <td><span class="badge bg-success">Realizada</span></td>
+                            </tr>
+                            {% empty %}
                             <tr>
                                 <td colspan="4" class="text-center py-4">
                                     <i class="fas fa-syringe fa-2x text-muted mb-2"></i>
                                     <p class="text-muted mb-0">Nenhuma vacinação registrada este mês</p>
                                 </td>
                             </tr>
+                            {% endfor %}
                         </tbody>
                     </table>
                 </div>
@@ -225,7 +180,7 @@
                 </h5>
             </div>
             <div class="card-body">
-                <div class="table-responsive">
+                <div class="table-responsive" style="max-height: 250px; overflow-y: auto;">
                     <table class="table table-hover">
                         <thead class="table-light">
                             <tr>
@@ -238,12 +193,28 @@
                             </tr>
                         </thead>
                         <tbody>
+                            {% for mov in movimentacoes_mes %}
+                            <tr>
+                                <td>{{ mov.produto.nome }}</td>
+                                <td>
+                                    {% if mov.tipo == 'entrada' %}
+                                        <span class="badge bg-success">Entrada</span>
+                                    {% else %}
+                                        <span class="badge bg-danger">Saída</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ mov.quantidade }}</td>
+                                <td>{{ mov.data|date:"d/m/Y" }}</td>
+                                <td>R$ {{ mov.produto.valor_unitario|floatformat:2 }}</td>
+                                <td>R$ {{ mov.quantidade|floatformat:0 }} x R$ {{ mov.produto.valor_unitario|floatformat:2 }}</td>
+                            </tr>
+                            {% empty %}
                             <tr>
                                 <td colspan="6" class="text-center py-4">
                                     <i class="fas fa-boxes fa-2x text-muted mb-2"></i>
-                                    <p class="text-muted mb-0">Nenhuma movimentação de estoque registrada este mês</p>
-                                </td>
+                                    <p class="text-muted mb-0">Nenhuma movimentação de estoque registrada este mês</td>
                             </tr>
+                            {% endfor %}
                         </tbody>
                     </table>
                 </div>
@@ -252,27 +223,101 @@
     </div>
 </div>
 
-<!-- Export and Action Buttons -->
-<div class="row">
+<!-- Observações Detalhadas -->
+<div class="row mb-5">
     <div class="col-12">
         <div class="card shadow">
-            <div class="card-body text-center">
-                <h5 class="mb-3">Exportar Relatório</h5>
-                <div class="btn-group" role="group">
-                    <button type="button" class="btn btn-success">
-                        <i class="fas fa-file-excel me-2"></i>Excel
-                    </button>
-                    <button type="button" class="btn btn-danger">
-                        <i class="fas fa-file-pdf me-2"></i>PDF
-                    </button>
-                    <button type="button" class="btn btn-primary">
-                        <i class="fas fa-print me-2"></i>Imprimir
-                    </button>
-                    <button type="button" class="btn btn-info">
-                        <i class="fas fa-share-alt me-2"></i>Compartilhar
-                    </button>
+            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-sticky-note me-2"></i>
+                    Observações Detalhadas
+                </h5>
+                <button type="button" class="btn btn-light btn-sm" data-bs-toggle="modal" data-bs-target="#observacaoModal">
+                    <i class="fas fa-plus me-1"></i>Nova Observação
+                </button>
+            </div>
+            <div class="card-body">
+                <div id="observacoes-container">
+                    <!-- As observações serão carregadas aqui via JavaScript -->
+                    <div class="text-center py-4">
+                        <i class="fas fa-spinner fa-spin fa-2x text-muted mb-2"></i>
+                        <p class="text-muted mb-0">Carregando observações...</p>
+                    </div>
                 </div>
             </div>
+        </div>
+    </div>
+</div>
+
+<!-- Observação Geral Fixa -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card shadow">
+            <div class="card-header bg-secondary text-white">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-comment-dots me-2"></i>
+                    Observação Geral (opcional)
+                </h5>
+            </div>
+            <div class="card-body">
+                <form id="observacaoGeralForm" class="d-flex flex-column flex-md-row align-items-md-center gap-3">
+                    <textarea class="form-control" id="observacaoGeral" name="observacao" rows="2" placeholder="Digite uma observação geral para este mês..."></textarea>
+                    <button type="submit" class="btn btn-secondary mt-2 mt-md-0">
+                        <i class="fas fa-save me-1"></i>Salvar Observação Geral
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para Nova Observação -->
+<div class="modal fade" id="observacaoModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title">
+                    <i class="fas fa-sticky-note me-2"></i>
+                    Nova Observação
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="observacaoForm">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="tipo" class="form-label">Tipo de Observação *</label>
+                            <select class="form-select" id="tipo" name="tipo" required>
+                                <option value="">Selecione...</option>
+                                <option value="LOTE">Lote</option>
+                                <option value="VACINACAO">Vacinação</option>
+                                <option value="BAIXA">Baixa de Animais</option>
+                                <option value="GERAL">Observação Geral</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="lote" class="form-label">Lote (se aplicável)</label>
+                            <input type="text" class="form-control" id="lote" name="lote" placeholder="Nome do lote">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="data_referencia" class="form-label">Data de Referência (se aplicável)</label>
+                            <input type="date" class="form-control" id="data_referencia" name="data_referencia">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="observacao" class="form-label">Observação (opcional)</label>
+                        <textarea class="form-control" id="observacao" name="observacao" rows="4" placeholder="Descreva a observação..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save me-1"></i>Salvar Observação
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
@@ -285,5 +330,156 @@
         </a>
     </div>
 </div>
+
+<script>
+// Carregar observações ao abrir a página
+document.addEventListener('DOMContentLoaded', function() {
+    carregarObservacoes();
+});
+
+function carregarObservacoes() {
+    fetch('{% url "listar_observacoes_detalhadas" %}')
+        .then(response => response.json())
+        .then(data => {
+            const container = document.getElementById('observacoes-container');
+            
+            if (data.observacoes.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-4">
+                        <i class="fas fa-sticky-note fa-2x text-muted mb-2"></i>
+                        <p class="text-muted mb-0">Nenhuma observação registrada para este mês</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            let html = '<div class="table-responsive"><table class="table table-hover">';
+            html += '<thead class="table-light"><tr><th>Tipo</th><th>Lote/Referência</th><th>Data Referência</th><th>Observação</th><th>Data Criação</th><th>Ações</th></tr></thead><tbody>';
+            
+            data.observacoes.forEach(obs => {
+                html += `
+                    <tr>
+                        <td><span class="badge bg-primary">${obs.tipo}</span></td>
+                        <td>${obs.lote}</td>
+                        <td>${obs.data_referencia}</td>
+                        <td>${obs.observacao}</td>
+                        <td>${obs.data_criacao}</td>
+                        <td>
+                            <button class="btn btn-danger btn-sm" onclick="excluirObservacao(${obs.id})">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            html += '</tbody></table></div>';
+            container.innerHTML = html;
+        })
+        .catch(error => {
+            console.error('Erro ao carregar observações:', error);
+            document.getElementById('observacoes-container').innerHTML = `
+                <div class="alert alert-danger">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    Erro ao carregar observações
+                </div>
+            `;
+        });
+}
+
+// Enviar formulário de observação
+document.getElementById('observacaoForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const formData = new FormData(this);
+    
+    fetch('{% url "adicionar_observacao_detalhada" %}', {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Fechar modal e recarregar observações
+            bootstrap.Modal.getInstance(document.getElementById('observacaoModal')).hide();
+            document.getElementById('observacaoForm').reset();
+            carregarObservacoes();
+            
+            // Mostrar mensagem de sucesso
+            alert('Observação salva com sucesso!');
+        } else {
+            alert('Erro ao salvar observação: ' + (data.error || 'Erro desconhecido'));
+        }
+    })
+    .catch(error => {
+        console.error('Erro:', error);
+        alert('Erro ao salvar observação');
+    });
+});
+
+function excluirObservacao(obsId) {
+    if (confirm('Tem certeza que deseja excluir esta observação?')) {
+        fetch(`{% url "excluir_observacao_detalhada" 0 %}`.replace('0', obsId), {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                carregarObservacoes();
+                alert('Observação excluída com sucesso!');
+            } else {
+                alert('Erro ao excluir observação: ' + (data.error || 'Erro desconhecido'));
+            }
+        })
+        .catch(error => {
+            console.error('Erro:', error);
+            alert('Erro ao excluir observação');
+        });
+    }
+}
+
+// Enviar observação geral
+const formGeral = document.getElementById('observacaoGeralForm');
+if (formGeral) {
+    formGeral.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const obs = document.getElementById('observacaoGeral').value.trim();
+        if (!obs) {
+            alert('Digite uma observação antes de salvar!');
+            return;
+        }
+        const formData = new FormData();
+        formData.append('tipo', 'GERAL');
+        formData.append('observacao', obs);
+        fetch('{% url "adicionar_observacao_detalhada" %}', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                document.getElementById('observacaoGeral').value = '';
+                carregarObservacoes();
+                alert('Observação geral salva com sucesso!');
+            } else {
+                alert('Erro ao salvar observação: ' + (data.error || 'Erro desconhecido'));
+            }
+        })
+        .catch(error => {
+            console.error('Erro:', error);
+            alert('Erro ao salvar observação');
+        });
+    });
+}
+</script>
 
 {% endblock %}

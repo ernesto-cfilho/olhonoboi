@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-4">
+    <h2>Relatório de Movimentação de Lote</h2>
+    <a href="{% url 'movimentacao_lote' %}" class="btn btn-primary mb-3">Nova Movimentação</a>
+    <a href="{% url 'exportar_excel_relatorio_movimentacao_lote' %}" class="btn btn-success mb-3">Exportar Excel</a>
+    <a href="{% url 'exportar_pdf_relatorio_movimentacao_lote' %}" class="btn btn-danger mb-3">Exportar PDF</a>
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>LOTE</th>
+                <th>ESTOQ.</th>
+                <th>MED. @</th>
+                <th colspan="3">MOVIMENTAÇÃO</th>
+                <th colspan="3">BAIXAS / MOTIVOS</th>
+                <th>ESTOQ. ATUAL</th>
+                <th>OBS. MANEJO</th>
+            </tr>
+            <tr>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th>DATA</th>
+                <th>ENTR.</th>
+                <th>SAÍDA</th>
+                <th>DATA</th>
+                <th>UND.</th>
+                <th>MOTIV.</th>
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in relatorio %}
+            <tr>
+                <td>{{ item.lote.nome }}</td>
+                <td>{{ item.estoque_inicial }}</td>
+                <td>{{ item.media_peso }}</td>
+                <td>
+                    {% for mov in item.movimentacoes %}
+                        {% if mov.tipo == 'entrada' %}{{ mov.data|date:'d/m/Y' }}<br>{% endif %}
+                    {% endfor %}
+                </td>
+                <td>
+                    {% for mov in item.movimentacoes %}
+                        {% if mov.tipo == 'entrada' %}{{ mov.quantidade }}<br>{% endif %}
+                    {% endfor %}
+                </td>
+                <td>
+                    {% for mov in item.movimentacoes %}
+                        {% if mov.tipo == 'saida' %}{{ mov.quantidade }}<br>{% endif %}
+                    {% endfor %}
+                </td>
+                <td>
+                    {% for mov in item.movimentacoes %}
+                        {% if mov.tipo == 'baixa' %}{{ mov.data|date:'d/m/Y' }}<br>{% endif %}
+                    {% endfor %}
+                </td>
+                <td>
+                    {% for mov in item.movimentacoes %}
+                        {% if mov.tipo == 'baixa' %}{{ mov.quantidade }}<br>{% endif %}
+                    {% endfor %}
+                </td>
+                <td>
+                    {% for mov in item.movimentacoes %}
+                        {% if mov.tipo == 'baixa' %}{{ mov.motivo }}<br>{% endif %}
+                    {% endfor %}
+                </td>
+                <td>{{ item.estoque_atual }}</td>
+                <td>{{ item.obs_manejo }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %} 

@@ -58,12 +58,16 @@
                                     </td>
                                     <td>
                                         <div class="btn-group" role="group">
-                                            <a href="#" class="btn btn-sm btn-primary" title="Editar">
+                                            <a href="{% url 'editar_vacina' vacina.id %}" class="btn btn-sm btn-primary" title="Editar">
                                                 <i class="fas fa-edit"></i>
                                             </a>
-                                            <a href="#" class="btn btn-sm btn-info" title="Histórico">
-                                                <i class="fas fa-history"></i>
-                                            </a>
+                                            <form method="post" action="{% url 'excluir_vacina' vacina.id %}" style="display:inline;">
+                                                {% csrf_token %}
+                                                <button type="submit" class="btn btn-sm btn-danger" title="Excluir"
+                                                        onclick="return confirm('Tem certeza que deseja excluir a vacina {{ vacina.nome }}?')">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </form>
                                         </div>
                                     </td>
                                 </tr>

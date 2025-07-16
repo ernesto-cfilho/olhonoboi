@@ -26,7 +26,9 @@ class Animal(models.Model):
     data_entrada = models.DateField("Data de Entrada")
     data_de_saida = models.DateField("Data de Saída", blank=True, null=True)
     peso = models.DecimalField("Peso (kg)", max_digits=6, decimal_places=2)
+    observacoes_baixa = models.TextField("Observações de Baixa", blank=True, null=True, help_text="Motivo da baixa ou observações sobre a saída do animal")
     is_active = models.BooleanField(default=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
 
     # Managers
     objects = ActiveManager()  # Manager padrão - apenas registros ativos
@@ -80,6 +82,7 @@ class Animal(models.Model):
 class Vacina(models.Model):
     nome = models.CharField("Nome da Vacina", max_length=100)
     validade_dias = models.IntegerField("Validade (dias)", default=30)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self):
         return self.nome
@@ -88,6 +91,7 @@ class Vacinacao(models.Model):
     animal = models.ForeignKey(Animal, on_delete=models.CASCADE, verbose_name="Animal")
     vacina = models.ForeignKey(Vacina, on_delete=models.CASCADE, verbose_name="Vacina")
     data_de_aplicacao = models.DateField("Data de Aplicação")
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
 
     class Meta:
         verbose_name = "Vacinação"

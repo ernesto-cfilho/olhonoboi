@@ -5,6 +5,14 @@
 
 {% block content %}
 <div class="px-2 px-md-3">
+    <!-- Debug info -->
+    <div class="alert alert-info">
+        <strong>Debug:</strong> 
+        Lotes encontrados: {{ lotes_data|length }} | 
+        Total de animais: {{ total_animais_geral }} |
+        Fazenda selecionada: {{ fazenda_selecionada.nome|default:"Nenhuma" }}
+    </div>
+
     <div class="d-flex justify-content-between align-items-center mb-3 mb-md-4 flex-wrap">
         <h2 class="text-primary mb-2 mb-md-0" style="font-size: 1.3rem;">
             <i class="fas fa-chart-pie me-1 me-md-2"></i>
@@ -64,16 +72,10 @@
                     </div>
                     <div class="card-body">                            
                         <div class="row mb-3">
-                            <div class="col-6 text-center">
+                            <div class="col-12 text-center">
                                 <div class="bg-success bg-opacity-10 p-2 rounded">
-                                    <h5 class="text-success mb-0">{{ item.gado_corte }}</h5>
-                                    <small class="text-muted">Corte</small>
-                                </div>
-                            </div>
-                            <div class="col-6 text-center">
-                                <div class="bg-info bg-opacity-10 p-2 rounded">
-                                    <h5 class="text-info mb-0">{{ item.gado_leite }}</h5>
-                                    <small class="text-muted">Leite</small>
+                                    <h5 class="text-success mb-0">{{ item.total_animais }}</h5>
+                                    <small class="text-muted">Gado de Corte</small>
                                 </div>
                             </div>
                         </div>
@@ -86,28 +88,7 @@
                             </div>
                         </div>
                         
-                        {% if item.lote.area or item.lote.capacidade_maxima %}
-                        <hr>
-                        <div class="row text-center">
-                            {% if item.lote.area %}
-                            <div class="col-6">
-                                <small class="text-muted">Área:</small><br>
-                                <strong>{{ item.lote.area }} ha</strong>
-                            </div>
-                            {% endif %}
-                            {% if item.lote.capacidade_maxima %}
-                            <div class="col-6">
-                                <small class="text-muted">Capacidade:</small><br>
-                                <strong>{{ item.lote.capacidade_maxima }}</strong>
-                                {% if item.total_animais > item.lote.capacidade_maxima %}
-                                    <span class="text-danger">
-                                        <i class="fas fa-exclamation-triangle" title="Acima da capacidade!"></i>
-                                    </span>
-                                {% endif %}
-                            </div>
-                            {% endif %}
-                        </div>
-                        {% endif %}
+
                     </div>
                     <div class="card-footer">
                         <div class="btn-group w-100" role="group">
@@ -119,10 +100,26 @@
                                class="btn btn-outline-info btn-sm">
                                 <i class="fas fa-exchange-alt"></i><span class="d-none d-lg-inline"> Mover</span>
                             </a>
-                            <a href="{% url 'adicionar_animal' %}?lote={{ item.lote.id }}" 
-                               class="btn btn-outline-success btn-sm">
-                                <i class="fas fa-plus"></i><span class="d-none d-lg-inline"> Animal</span>
-                            </a>
+                            <div class="btn-group" role="group">
+                                <button type="button" class="btn btn-outline-secondary btn-sm dropdown-toggle" 
+                                        data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fas fa-cog"></i>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end">
+                                    <li>
+                                        <a class="dropdown-item" href="{% url 'editar_piquete' item.lote.id %}?next={{ request.get_full_path|urlencode }}&fazenda={{ request.GET.fazenda|default:item.lote.fazenda.id }}">
+                                            <i class="fas fa-edit me-2"></i>Editar Área
+                                        </a>
+                                    </li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li>
+                                        <a class="dropdown-item text-danger" href="#" 
+                                           onclick="deletarLote({{ item.lote.id }}, '{{ item.lote.nome }}')">
+                                            <i class="fas fa-trash me-2"></i>Excluir Lote
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -141,45 +138,15 @@
             </div>
             <div class="card-body">
                 <div class="row text-center">
-                    <div class="col-6 col-md-3">
+                    <div class="col-6 col-md-6">
                         <h4 class="text-primary">{{ lotes_data|length }}</h4>
                         <p class="text-muted">Lotes</p>
                     </div>
-                    <div class="col-6 col-md-3">
+                    <div class="col-6 col-md-6">
                         <h4 class="text-success">
-                            {% with total=0 %}
-                                {% for item in lotes_data %}
-                                    {% with total=total|add:item.total_animais %}
-                                    {% endwith %}
-                                {% endfor %}
-                                {{ total }}
-                            {% endwith %}
+                            {{ total_animais_geral }}
                         </h4>
-                        <p class="text-muted">Animais</p>
-                    </div>
-                    <div class="col-6 col-md-3">
-                        <h4 class="text-info">
-                            {% with total_corte=0 %}
-                                {% for item in lotes_data %}
-                                    {% with total_corte=total_corte|add:item.gado_corte %}
-                                    {% endwith %}
-                                {% endfor %}
-                                {{ total_corte }}
-                            {% endwith %}
-                        </h4>
-                        <p class="text-muted">Corte</p>
-                    </div>
-                    <div class="col-6 col-md-3">
-                        <h4 class="text-warning">
-                            {% with total_leite=0 %}
-                                {% for item in lotes_data %}
-                                    {% with total_leite=total_leite|add:item.gado_leite %}
-                                    {% endwith %}
-                                {% endfor %}
-                                {{ total_leite }}
-                            {% endwith %}
-                        </h4>
-                        <p class="text-muted">Leite</p>
+                        <p class="text-muted">Quantidade total de animais</p>
                     </div>
                 </div>
             </div>
@@ -201,4 +168,32 @@
         </div>
     {% endif %}
 </div>
+
+<script>
+function deletarLote(id, nome) {
+    if (confirm(`Tem certeza que deseja excluir o lote "${nome}"?\n\nATENÇÃO: Esta ação não pode ser desfeita e todos os animais do lote serão movidos para "Sem Lote".`)) {
+        fetch(`/fazendascdst/lotes/deletar/${id}/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+                'Content-Type': 'application/json',
+            },
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                location.reload();
+            } else {
+                alert('Erro: ' + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Erro:', error);
+            alert('Erro ao excluir lote');
+        });
+    }
+}
+</script>
+
+{% csrf_token %}
 {% endblock %}

@@ -17,4 +17,10 @@ urlpatterns = [
     path('lotes/adicionar/', views.adicionar_piquete, name='adicionar_piquete'),
     path('lotes/editar/<int:piquete_id>/', views.editar_piquete, name='editar_piquete'),
     path('lotes/deletar/<int:piquete_id>/', views.deletar_piquete, name='deletar_piquete'),
+    path('excluir-animais-do-lote/', views.excluir_animais_do_lote, name='excluir_animais_do_lote'),
+    path('adicionar-animal-lote/', views.adicionar_animal_lote, name='adicionar_animal_lote'),
+    path('adicionar-animais-lote/', views.adicionar_animais_lote, name='adicionar_animais_lote'),
+    path('excluir-animal-lote/', views.excluir_animal_lote, name='excluir_animal_lote'),
+    path('excluir-animais-lote/', views.excluir_animais_lote, name='excluir_animais_lote'),
+    path('excluir-lote-com-senha/', views.excluir_lote_com_senha, name='excluir_lote_com_senha'),
 ]

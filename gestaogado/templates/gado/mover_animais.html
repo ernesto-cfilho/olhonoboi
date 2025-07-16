@@ -96,32 +96,7 @@
             </div>
         </div>
         
-        <!-- Especificação de Peso (Opcional) -->
-        <div class="card mb-4">
-            <div class="card-header bg-secondary text-white">
-                <h5 class="mb-0">
-                    <i class="fas fa-weight-hanging me-2"></i>Peso Esperado (Opcional)
-                </h5>
-            </div>
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-sm-8">
-                        <input type="number" step="0.01" class="form-control" name="peso_total" 
-                               placeholder="Ex: 300.5" id="pesoEsperado">
-                    </div>
-                    <div class="col-sm-4">
-                        <select class="form-control" name="unidade_peso">
-                            <option value="kg">kg</option>
-                            <option value="arroba">@</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="form-text">
-                    <i class="fas fa-info-circle me-1"></i>
-                    Informe o peso esperado para validação. O sistema alertará se houver diferença significativa.
-                </div>
-            </div>
-        </div>
+
         
         <!-- Seleção de Animais -->
         <div class="card mb-4">
@@ -134,7 +109,7 @@
             <div class="card-body p-0">
                 {% if animais %}
                 <div class="p-3 bg-light">
-                    <div class="row">
+                    <div class="row mb-3">
                         <div class="col-sm-6">
                             <button type="button" class="btn btn-sm btn-outline-primary" onclick="selecionarTodos()">
                                 <i class="fas fa-check-square me-1"></i>Selecionar Todos
@@ -142,10 +117,35 @@
                             <button type="button" class="btn btn-sm btn-outline-secondary" onclick="deselecionarTodos()">
                                 <i class="fas fa-square me-1"></i>Limpar Seleção
                             </button>
+                            <button type="submit" class="btn btn-success btn-sm" id="btnMover" disabled>
+                                <i class="fas fa-exchange-alt me-1"></i>Mover Selecionados
+                            </button>
                         </div>
                         <div class="col-sm-6 text-end">
                             <span class="badge bg-info" id="contadorSelecionados">0 selecionados</span>
-                            <span class="badge bg-success" id="pesoSelecionados">0kg</span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <label for="quantidadeAnimais" class="form-label">
+                                <i class="fas fa-hashtag me-1"></i>Quantidade de Animais a Mover:
+                            </label>
+                            <input type="number" class="form-control" id="quantidadeAnimais" 
+                                   name="quantidade_animais" min="1" max="{{ animais.count }}" 
+                                   placeholder="Ex: 5" onchange="validarQuantidade()">
+                            <div class="form-text">
+                                <i class="fas fa-info-circle me-1"></i>
+                                Deixe em branco para mover todos os selecionados
+                            </div>
+                            <div class="alert alert-warning mt-2" id="limiteAlert" style="display: none;">
+                                <i class="fas fa-exclamation-triangle me-1"></i>
+                                <strong>Atenção:</strong> Para evitar problemas de performance, recomenda-se mover no máximo <strong>500 animais</strong> por vez.
+                            </div>
+                        </div>
+                        <div class="col-sm-6 d-flex align-items-end">
+                            <button type="button" class="btn btn-sm btn-outline-warning" onclick="selecionarPorQuantidade()">
+                                <i class="fas fa-sort-numeric-up me-1"></i>Selecionar por Quantidade
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -156,11 +156,10 @@
                                 <th style="width: 10%;">
                                     <input type="checkbox" id="selectAll" onchange="toggleAll()">
                                 </th>
-                                <th class="text-center" style="width: 20%;">Fazenda</th>
-                                <th class="text-center" style="width: 15%;">ID</th>
-                                <th class="text-center d-none d-md-table-cell" style="width: 15%;">Tipo</th>
-                                <th class="text-center d-none d-md-table-cell" style="width: 20%;">Peso</th>
-                                <th class="text-center d-none d-lg-table-cell" style="width: 20%;">Entrada</th>
+                                <th class="text-center" style="width: 25%;">Fazenda</th>
+                                <th class="text-center" style="width: 20%;">ID</th>
+                                <th class="text-center d-none d-md-table-cell" style="width: 25%;">Peso</th>
+                                <th class="text-center d-none d-lg-table-cell" style="width: 30%;">Entrada</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -176,13 +175,6 @@
                                 </td>
                                 <td class="text-center align-middle">
                                     <strong class="text-primary">{{ animal.identificador }}</strong>
-                                </td>
-                                <td class="text-center align-middle d-none d-md-table-cell">
-                                    {% if animal.tipo == 'CORTE' %}
-                                        <span class="badge bg-warning">Corte</span>
-                                    {% else %}
-                                        <span class="badge bg-secondary">Leite</span>
-                                    {% endif %}
                                 </td>
                                 <td class="text-center align-middle d-none d-md-table-cell">
                                     {{ animal.peso|floatformat:1 }}kg<br>
@@ -206,13 +198,7 @@
             </div>
         </div>
         
-        {% if animais %}
-        <div class="text-end">
-            <button type="submit" class="btn btn-success btn-lg" id="btnMover" disabled>
-                <i class="fas fa-exchange-alt me-2"></i>Mover Animais Selecionados
-            </button>
-        </div>
-        {% endif %}
+
     </form>
     {% endif %}
 </div>
@@ -252,7 +238,21 @@ function atualizarContadores() {
     });
     
     document.getElementById('contadorSelecionados').textContent = `${contador} selecionados`;
-    document.getElementById('pesoSelecionados').textContent = `${pesoTotal.toFixed(1)}kg`;
+    
+    // Verificar limite de animais
+    const limiteAlert = document.getElementById('limiteAlert');
+    const LIMITE_RECOMENDADO = 500;
+    
+    if (contador > LIMITE_RECOMENDADO) {
+        limiteAlert.style.display = 'block';
+        limiteAlert.innerHTML = `
+            <i class="fas fa-exclamation-triangle me-1"></i>
+            <strong>Atenção:</strong> Você selecionou <strong>${contador} animais</strong>. 
+            Para evitar problemas de performance, recomenda-se mover no máximo <strong>${LIMITE_RECOMENDADO} animais</strong> por vez.
+        `;
+    } else {
+        limiteAlert.style.display = 'none';
+    }
     
     // Habilitar/desabilitar botão
     const btnMover = document.getElementById('btnMover');
@@ -290,6 +290,68 @@ document.getElementById('moveForm')?.addEventListener('submit', function(e) {
         e.preventDefault();
     }
 });
+
+// Função para validar quantidade
+function validarQuantidade() {
+    const quantidadeInput = document.getElementById('quantidadeAnimais');
+    const quantidade = parseInt(quantidadeInput.value);
+    const totalAnimais = {{ animais.count }};
+    
+    if (quantidade > totalAnimais) {
+        alert(`A quantidade não pode ser maior que ${totalAnimais} animais.`);
+        quantidadeInput.value = totalAnimais;
+    } else if (quantidade < 1 && quantidadeInput.value !== '') {
+        alert('A quantidade deve ser pelo menos 1.');
+        quantidadeInput.value = 1;
+    }
+}
+
+// Função para selecionar por quantidade
+function selecionarPorQuantidade() {
+    const quantidadeInput = document.getElementById('quantidadeAnimais');
+    const quantidade = parseInt(quantidadeInput.value);
+    const LIMITE_RECOMENDADO = 500;
+    
+    if (!quantidade || quantidade < 1) {
+        alert('Por favor, informe uma quantidade válida.');
+        quantidadeInput.focus();
+        return;
+    }
+    
+    if (quantidade > LIMITE_RECOMENDADO) {
+        const confirmacao = confirm(
+            `Você está tentando selecionar ${quantidade} animais. ` +
+            `Para evitar problemas de performance, recomenda-se mover no máximo ${LIMITE_RECOMENDADO} animais por vez. ` +
+            `Deseja continuar mesmo assim?`
+        );
+        if (!confirmacao) {
+            return;
+        }
+    }
+    
+    const checkboxes = document.querySelectorAll('.animal-checkbox');
+    const totalAnimais = checkboxes.length;
+    
+    if (quantidade > totalAnimais) {
+        alert(`A quantidade não pode ser maior que ${totalAnimais} animais.`);
+        quantidadeInput.value = totalAnimais;
+        return;
+    }
+    
+    // Desmarcar todos primeiro
+    checkboxes.forEach(checkbox => {
+        checkbox.checked = false;
+    });
+    
+    // Selecionar apenas a quantidade especificada
+    for (let i = 0; i < quantidade; i++) {
+        if (checkboxes[i]) {
+            checkboxes[i].checked = true;
+        }
+    }
+    
+    atualizarContadores();
+}
 
 // Inicializar contadores
 document.addEventListener('DOMContentLoaded', function() {

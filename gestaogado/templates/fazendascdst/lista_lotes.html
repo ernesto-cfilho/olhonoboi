@@ -64,50 +64,49 @@
                         <tr>
                             <th class="text-center" style="width: 25%;">Fazenda</th>
                             <th style="width: 25%;">Nome do Lote</th>
-                            <th class="text-center d-none d-md-table-cell" style="width: 15%;">Área</th>
-                            <th class="text-center d-none d-md-table-cell" style="width: 15%;">Capacidade</th>
+
+                            <th class="text-center d-none d-md-table-cell" style="width: 15%;">Nº Animais</th>
                             <th class="text-center" style="width: 20%;">Ações</th>
+                            <th>Excluir em lote</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {% for lote in lotes %}
+                        {% for item in lotes_data %}
                         <tr>
                             <td class="text-center align-middle">
-                                <span class="badge bg-success">{{ lote.fazenda.nome }}</span>
+                                <span class="badge bg-success">{{ item.lote.fazenda.nome }}</span>
                             </td>
                             <td class="align-middle">
                                 <i class="fas fa-th-large text-primary me-2"></i>
-                                <strong>{{ lote.nome }}</strong>
+                                <strong>{{ item.lote.nome }}</strong>
                             </td>
+
                             <td class="text-center align-middle d-none d-md-table-cell">
-                                {% if lote.area %}
-                                    {{ lote.area }} ha
-                                {% else %}
-                                    <span class="text-muted">-</span>
-                                {% endif %}
-                            </td>
-                            <td class="text-center align-middle d-none d-md-table-cell">
-                                {% if lote.capacidade_maxima %}
-                                    {{ lote.capacidade_maxima }}
-                                {% else %}
-                                    <span class="text-muted">-</span>
-                                {% endif %}
+                                {{ item.total_animais }}
                             </td>
                             <td class="text-center align-middle">
                                 <div class="btn-group" role="group">
-                                    <a href="{% url 'editar_piquete' lote.id %}" 
+                                    <a href="{% url 'editar_piquete' item.lote.id %}" 
                                        class="btn btn-outline-primary btn-sm" 
                                        title="Editar">
                                         <i class="fas fa-edit"></i>
                                         <span class="d-none d-lg-inline ms-1">Editar</span>
                                     </a>
-                                    <button onclick="deletarLote({{ lote.id }}, '{{ lote.nome }}')" 
-                                            class="btn btn-outline-danger btn-sm" 
-                                            title="Excluir">
+                                    <button type="button" class="btn btn-outline-danger btn-sm" title="Excluir"
+                                            data-bs-toggle="modal" data-bs-target="#modalExcluirLote"
+                                            data-lote-id="{{ item.lote.id }}" data-lote-nome="{{ item.lote.nome }}">
                                         <i class="fas fa-trash"></i>
                                         <span class="d-none d-lg-inline ms-1">Excluir</span>
                                     </button>
                                 </div>
+                            </td>
+                            <td>
+                                <form method="post" action="{% url 'excluir_animais_do_lote' %}" style="display:inline-block;">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="lote_id" value="{{ item.lote.id }}">
+                                    <input type="number" name="quantidade" min="1" max="{{ item.total_animais }}" placeholder="Qtd" style="width:70px; display:inline-block;">
+                                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Excluir essa quantidade de animais do lote {{ item.lote.nome }}?')">Excluir</button>
+                                </form>
                             </td>
                         </tr>
                         {% endfor %}
@@ -134,28 +133,43 @@
     </div>
 </div>
 
+<!-- Modal de confirmação de exclusão de lote com senha -->
+<div class="modal fade" id="modalExcluirLote" tabindex="-1" aria-labelledby="modalExcluirLoteLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form method="post" action="{% url 'excluir_lote_com_senha' %}">
+        {% csrf_token %}
+        <div class="modal-header bg-danger text-white">
+          <h5 class="modal-title" id="modalExcluirLoteLabel">Excluir Lote</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" name="lote_id" id="modal-lote-id">
+          <p>Tem certeza que deseja <strong>excluir o lote <span id="modal-lote-nome"></span></strong>?<br>
+          Esta ação é <span class="text-danger fw-bold">irreversível</span> e todos os animais associados serão desvinculados.</p>
+          <div class="mb-3">
+            <label for="modal-senha" class="form-label">Confirme sua senha para prosseguir:</label>
+            <input type="password" class="form-control" id="modal-senha" name="senha" placeholder="Digite sua senha" required>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="submit" class="btn btn-danger">Excluir Lote</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
 <script>
-function deletarLote(loteId, nomeLote) {
-    if (confirm(`Tem certeza que deseja excluir o lote "${nomeLote}"?`)) {
-        fetch(`/fazendascdst/deletar_piquete/${loteId}/`, {
-            method: 'POST',
-            headers: {
-                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
-            }
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                location.reload();
-            } else {
-                alert('Erro: ' + data.message);
-            }
-        })
-        .catch(error => {
-            console.error('Erro:', error);
-            alert('Erro ao excluir lote!');
-        });
-    }
-}
+// Preencher dados do modal ao abrir
+var modalExcluirLote = document.getElementById('modalExcluirLote');
+modalExcluirLote.addEventListener('show.bs.modal', function (event) {
+  var button = event.relatedTarget;
+  var loteId = button.getAttribute('data-lote-id');
+  var loteNome = button.getAttribute('data-lote-nome');
+  document.getElementById('modal-lote-id').value = loteId;
+  document.getElementById('modal-lote-nome').textContent = loteNome;
+  document.getElementById('modal-senha').value = '';
+});
 </script>
 {% endblock %}

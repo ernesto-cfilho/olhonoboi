@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 class ActiveManager(models.Manager):
     """Manager que retorna apenas registros ativos"""
@@ -11,9 +12,9 @@ class AllManager(models.Manager):
         return super().get_queryset()
 
 class Fazenda(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     nome = models.CharField(max_length=100)
     localização = models.TextField()
-    area = models.DecimalField("Área (hectares)", max_digits=10, decimal_places=2, null=True, blank=True)
     data_de_cadastro = models.DateField(auto_now_add=True)
     is_active = models.BooleanField(default=True)
 
@@ -36,9 +37,10 @@ class Fazenda(models.Model):
 
 
 class Lote(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     nome = models.CharField("Nome do Lote", max_length=100)
     fazenda = models.ForeignKey(Fazenda, on_delete=models.CASCADE, related_name='lotes')
-    area = models.DecimalField("Área (hectares)", max_digits=8, decimal_places=2, null=True, blank=True)
+
     capacidade_maxima = models.IntegerField("Capacidade Máxima de Animais", null=True, blank=True)
     data_de_cadastro = models.DateField(auto_now_add=True)
     is_active = models.BooleanField(default=True)

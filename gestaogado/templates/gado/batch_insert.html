@@ -49,12 +49,14 @@
                     <div class="row mb-3">
                         <div class="col-sm-6">
                             <label for="tipo" class="form-label">
-                                <i class="fas fa-cow me-2"></i>Tipo de Gado *
+                                <i class="fas fa-cow me-2"></i>Tipo de Gado
                             </label>
-                            <select class="form-control" id="tipo" name="tipo" required>
-                                <option value="CORTE">Gado de Corte</option>
-                                <option value="LEITE">Gado Leiteiro</option>
-                            </select>
+                            <input type="text" class="form-control" id="tipo" name="tipo" 
+                                   value="CORTE" readonly style="background-color: #f8f9fa;">
+                            <div class="form-text">
+                                <i class="fas fa-info-circle me-1"></i>
+                                Sistema configurado apenas para gado de corte
+                            </div>
                         </div>
                         <div class="col-sm-6">
                             <label for="data_entrada" class="form-label">

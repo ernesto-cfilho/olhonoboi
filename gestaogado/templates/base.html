@@ -57,6 +57,39 @@
         body {
             background: url('{% static 'img/fields-6558064_1280.jpg' %}') center center/cover no-repeat fixed;
         }
+        /* Custom styles for logout button */
+        .logout-btn {
+            text-align: center !important;
+            justify-content: center !important;
+            display: flex !important;
+            align-items: center !important;
+            width: 100% !important;
+            background: none !important;
+            border: none !important;
+            padding: 0.5rem 1rem !important;
+            margin: 0 !important;
+        }
+        
+        /* Footer styles */
+        .footer {
+            font-size: 0.9rem;
+        }
+        
+        .footer a:hover {
+            opacity: 1 !important;
+            text-decoration: underline !important;
+        }
+        
+        @media (max-width: 768px) {
+            .footer .col-md-6 {
+                text-align: center !important;
+                margin-bottom: 0.5rem;
+            }
+            
+            .footer .col-md-6:last-child {
+                margin-bottom: 0;
+            }
+        }
     </style>
     <!-- CSS Específico por Página -->
     {% block extra_css %}{% endblock %}
@@ -152,9 +185,14 @@
                             </a></li>
                             <li><hr class="dropdown-divider"></li>
                             {% endif %}
-                            <li><a class="dropdown-item" href="{% url 'logout' %}">
-                                <i class="fas fa-sign-out-alt me-2"></i>Sair
-                            </a></li>
+                            <li>
+                                <form id="logout-form" action="{% url 'logout' %}" method="post">
+                                    {% csrf_token %}
+                                    <button type="submit" class="dropdown-item logout-btn">
+                                        <i class="fas fa-sign-out-alt me-2"></i>Sair
+                                    </button>
+                                </form>
+                            </li>
                         </ul>
                     </li>
                     {% else %}
@@ -187,12 +225,24 @@
     </main>
 
     <!-- Footer -->
-    <footer class="bg-dark text-white text-center py-3 mt-5">
+    {% now 'Y' as year %}
+    <footer class="footer mt-auto py-3 bg-dark text-white" style="position: static !important; bottom: auto !important;">
         <div class="container">
-            <p class="mb-0">
-                <i class="fas fa-copyright me-1"></i>
-                {% now "Y" %} Olho no Gado - Sistema de Gestão Pecuária
-            </p>
+            <div class="row align-items-center">
+                <div class="col-md-6 text-start">
+                    <span class="text-muted">
+                        <i class="fas fa-code me-1"></i>Created by Ernesto Cardoso
+                    </span>
+                </div>
+                <div class="col-md-6 text-end">
+                    <span class="text-muted">
+                        <i class="fab fa-linkedin me-1"></i>
+                        <a href="#" class="text-white text-decoration-none" style="opacity: 0.7;">
+                            LinkedIn
+                        </a>
+                    </span>
+                </div>
+            </div>
         </div>
     </footer>
 

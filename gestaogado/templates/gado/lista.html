@@ -9,8 +9,18 @@
         <h2 class="text-primary mb-2 mb-md-0" style="font-size: 1.3rem;">
             <i class="fas fa-cow me-1 me-md-2"></i>
             <span class="d-none d-sm-inline">Lista de </span>Animais
+            {% if lote_filtro %}
+                <br><small class="text-muted d-md-none">Lote: {{ lote_filtro.nome }}</small>
+                <span class="d-none d-md-inline"> - Lote: {{ lote_filtro.nome }}</span>
+            {% endif %}
         </h2>
         <div class="d-flex gap-2">
+            {% if lote_filtro %}
+                <a href="{% url 'overview_piquetes' %}" class="btn btn-secondary btn-sm">
+                    <i class="fas fa-arrow-left me-1"></i>
+                    <span class="d-none d-sm-inline">Voltar</span><span class="d-sm-none">Voltar</span>
+                </a>
+            {% endif %}
             <a href="{% url 'adicionar_animal' %}" class="btn btn-success btn-sm">
                 <i class="fas fa-plus me-1"></i>
                 <span class="d-none d-sm-inline">Novo Animal</span><span class="d-sm-none">Novo</span>
@@ -31,58 +41,90 @@
         </div>
         <div class="card-body p-0">
             {% if animais %}
-            <div class="table-responsive">
-                <table class="table table-hover mb-0">
-                    <thead class="table-dark">
-                        <tr>
-                            <th class="text-center" style="width: 20%;">Fazenda</th>
-                            <th class="text-center" style="width: 15%;">Lote</th>
-                            <th class="text-center" style="width: 15%;">ID</th>
-                            <th class="text-center d-none d-md-table-cell" style="width: 10%;">Tipo</th>
-                            <th class="text-center d-none d-md-table-cell" style="width: 15%;">Peso</th>
-                            <th class="text-center d-none d-lg-table-cell" style="width: 15%;">Entrada</th>
-                            <th class="text-center" style="width: 10%;">Ações</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for animal in animais %}
-                        <tr>
-                            <td class="text-center align-middle">
-                                <span class="badge bg-success">{{ animal.fazenda.nome }}</span>
-                            </td>
-                            <td class="text-center align-middle">
-                                <span class="badge bg-info">{{ animal.lote.nome }}</span>
-                            </td>
-                            <td class="text-center align-middle">
-                                <strong class="text-primary">{{ animal.identificador }}</strong>
-                            </td>
-                            <td class="text-center align-middle d-none d-md-table-cell">
-                                {% if animal.tipo == 'CORTE' %}
-                                    <span class="badge bg-warning">Corte</span>
-                                {% else %}
-                                    <span class="badge bg-secondary">Leite</span>
-                                {% endif %}
-                            </td>
-                            <td class="text-center align-middle d-none d-md-table-cell">
-                                {{ animal.peso|floatformat:1 }}kg<br>
-                                <small class="text-muted">({{ animal.peso_em_arrobas|floatformat:1 }}@)</small>
-                            </td>
-                            <td class="text-center align-middle d-none d-lg-table-cell">
-                                {{ animal.data_entrada|date:"d/m/Y" }}
-                            </td>
-                            <td class="text-center align-middle">
-                                <div class="btn-group" role="group">
-                                    <button class="btn btn-outline-danger btn-sm" title="Excluir" 
-                                            onclick="deletarAnimal({{ animal.id }}, '{{ animal.identificador }}')">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
+            <form method="post" action="{% url 'excluir_animais_lote' %}" id="form-excluir-lote">
+                {% csrf_token %}
+                {% if lote_filtro %}
+                    <input type="hidden" name="lote_filtro" value="{{ lote_filtro.id }}">
+                {% endif %}
+                <div class="p-4 bg-light border-bottom">
+                    <div class="row align-items-end">
+                        <div class="col-sm-4 mb-3">
+                            <label for="quantidadeExcluir" class="form-label">
+                                <i class="fas fa-hashtag me-1"></i>Quantidade a Excluir:
+                            </label>
+                            <input type="number" class="form-control" id="quantidadeExcluir" 
+                                   min="1" max="{{ animais.count }}" placeholder="Ex: 5" onchange="validarQuantidadeExcluir()">
+                            <div class="form-text">
+                                <i class="fas fa-info-circle me-1"></i>
+                                Deixe em branco para excluir todos os selecionados
+                            </div>
+                        </div>
+                        <div class="col-sm-4 mb-3">
+                            <div class="d-flex flex-column gap-2">
+                                <button type="button" class="btn btn-warning" onclick="selecionarPorQuantidadeExcluir()">
+                                    <i class="fas fa-sort-numeric-up me-1"></i>Selecionar por Quantidade
+                                </button>
+                                <button type="submit" class="btn btn-danger" onclick="return confirm('Tem certeza que deseja excluir os animais selecionados?')">
+                                    <i class="fas fa-trash me-1"></i>Excluir Selecionados
+                                </button>
+                            </div>
+                        </div>
+                        <div class="col-sm-4 text-end mb-3">
+                            <span class="badge bg-info fs-6" id="contadorSelecionados">0 selecionados</span>
+                        </div>
+                    </div>
+                    <div class="alert alert-warning mt-3" id="limiteAlertExcluir" style="display: none;">
+                        <i class="fas fa-exclamation-triangle me-1"></i>
+                        <strong>Atenção:</strong> Para evitar problemas de performance, recomenda-se excluir no máximo <strong>500 animais</strong> por vez.
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead class="table-dark">
+                            <tr>
+                                <th><input type="checkbox" id="select-all"></th>
+                                <th class="text-center" style="width: 25%;">Fazenda</th>
+                                <th class="text-center" style="width: 20%;">Lote</th>
+                                <th class="text-center" style="width: 20%;">ID</th>
+                                <th class="text-center d-none d-md-table-cell" style="width: 20%;">Peso</th>
+                                <th class="text-center d-none d-lg-table-cell" style="width: 15%;">Entrada</th>
+                                <th class="text-center" style="width: 10%;">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for animal in animais %}
+                            <tr>
+                                <td><input type="checkbox" name="animais_ids" value="{{ animal.id }}"></td>
+                                <td class="text-center align-middle">
+                                    <span class="badge bg-success">{{ animal.fazenda.nome }}</span>
+                                </td>
+                                <td class="text-center align-middle">
+                                    <span class="badge bg-info">{{ animal.lote.nome }}</span>
+                                </td>
+                                <td class="text-center align-middle">
+                                    <strong class="text-primary">{{ animal.identificador }}</strong>
+                                </td>
+                                <td class="text-center align-middle d-none d-md-table-cell">
+                                    {{ animal.peso|floatformat:1 }}kg<br>
+                                    <small class="text-muted">({{ animal.peso_em_arrobas|floatformat:1 }}@)</small>
+                                </td>
+                                <td class="text-center align-middle d-none d-lg-table-cell">
+                                    {{ animal.data_entrada|date:"d/m/Y" }}
+                                </td>
+                                <td class="text-center align-middle">
+                                    <div class="btn-group" role="group">
+                                        <button class="btn btn-outline-danger btn-sm" title="Excluir" 
+                                                onclick="deletarAnimal({{ animal.id }}, '{{ animal.identificador }}')">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </form>
             {% else %}
             <div class="text-center p-4">
                 <i class="fas fa-cow fa-3x text-muted mb-3"></i>
@@ -121,6 +163,117 @@ function deletarAnimal(animalId, identificador) {
         });
     }
 }
+
+// Função para validar quantidade de exclusão
+function validarQuantidadeExcluir() {
+    const quantidadeInput = document.getElementById('quantidadeExcluir');
+    const quantidade = parseInt(quantidadeInput.value);
+    const totalAnimais = {{ animais.count }};
+    
+    if (quantidade > totalAnimais) {
+        alert(`A quantidade não pode ser maior que ${totalAnimais} animais.`);
+        quantidadeInput.value = totalAnimais;
+    } else if (quantidade < 1 && quantidadeInput.value !== '') {
+        alert('A quantidade deve ser pelo menos 1.');
+        quantidadeInput.value = 1;
+    }
+}
+
+// Função para selecionar por quantidade para exclusão
+function selecionarPorQuantidadeExcluir() {
+    const quantidadeInput = document.getElementById('quantidadeExcluir');
+    const quantidade = parseInt(quantidadeInput.value);
+    const LIMITE_RECOMENDADO = 500;
+    
+    if (!quantidade || quantidade < 1) {
+        alert('Por favor, informe uma quantidade válida.');
+        quantidadeInput.focus();
+        return;
+    }
+    
+    if (quantidade > LIMITE_RECOMENDADO) {
+        const confirmacao = confirm(
+            `Você está tentando selecionar ${quantidade} animais para exclusão. ` +
+            `Para evitar problemas de performance, recomenda-se excluir no máximo ${LIMITE_RECOMENDADO} animais por vez. ` +
+            `Deseja continuar mesmo assim?`
+        );
+        if (!confirmacao) {
+            return;
+        }
+    }
+    
+    const checkboxes = document.querySelectorAll('input[name="animais_ids"]');
+    const totalAnimais = checkboxes.length;
+    
+    if (quantidade > totalAnimais) {
+        alert(`A quantidade não pode ser maior que ${totalAnimais} animais.`);
+        quantidadeInput.value = totalAnimais;
+        return;
+    }
+    
+    // Desmarcar todos primeiro
+    checkboxes.forEach(checkbox => {
+        checkbox.checked = false;
+    });
+    
+    // Selecionar apenas a quantidade especificada
+    for (let i = 0; i < quantidade; i++) {
+        if (checkboxes[i]) {
+            checkboxes[i].checked = true;
+        }
+    }
+    
+    atualizarContadoresExcluir();
+}
+
+// Função para atualizar contadores de exclusão
+function atualizarContadoresExcluir() {
+    const checkboxes = document.querySelectorAll('input[name="animais_ids"]:checked');
+    const contador = checkboxes.length;
+    const LIMITE_RECOMENDADO = 500;
+    
+    document.getElementById('contadorSelecionados').textContent = `${contador} selecionados`;
+    
+    // Verificar limite de animais
+    const limiteAlert = document.getElementById('limiteAlertExcluir');
+    
+    if (contador > LIMITE_RECOMENDADO) {
+        limiteAlert.style.display = 'block';
+        limiteAlert.innerHTML = `
+            <i class="fas fa-exclamation-triangle me-1"></i>
+            <strong>Atenção:</strong> Você selecionou <strong>${contador} animais</strong> para exclusão. 
+            Para evitar problemas de performance, recomenda-se excluir no máximo <strong>${LIMITE_RECOMENDADO} animais</strong> por vez.
+        `;
+    } else {
+        limiteAlert.style.display = 'none';
+    }
+    
+    // Atualizar checkbox "selecionar todos"
+    const totalCheckboxes = document.querySelectorAll('input[name="animais_ids"]').length;
+    const selectAll = document.getElementById('select-all');
+    if (selectAll) {
+        selectAll.checked = contador === totalCheckboxes && totalCheckboxes > 0;
+        selectAll.indeterminate = contador > 0 && contador < totalCheckboxes;
+    }
+}
+
+// Função para selecionar todos
+document.getElementById('select-all').onclick = function() {
+    var checkboxes = document.querySelectorAll('input[name="animais_ids"]');
+    for (var checkbox of checkboxes) {
+        checkbox.checked = this.checked;
+    }
+    atualizarContadoresExcluir();
+}
+
+// Adicionar event listeners para checkboxes individuais
+document.addEventListener('DOMContentLoaded', function() {
+    const checkboxes = document.querySelectorAll('input[name="animais_ids"]');
+    checkboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', atualizarContadoresExcluir);
+    });
+    atualizarContadoresExcluir();
+});
 </script>
 
 {% csrf_token %}

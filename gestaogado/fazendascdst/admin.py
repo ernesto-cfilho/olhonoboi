@@ -3,7 +3,7 @@ from .models import Fazenda, Lote
 
 @admin.register(Fazenda)
 class FazendaAdmin(admin.ModelAdmin):
-    list_display = ('nome', 'localização', 'area', 'data_de_cadastro', 'is_active')
+    list_display = ('nome', 'localização', 'data_de_cadastro', 'is_active')
     search_fields = ('nome', 'localização')
     list_filter = ('data_de_cadastro', 'is_active')
     date_hierarchy = 'data_de_cadastro'
@@ -26,7 +26,7 @@ class FazendaAdmin(admin.ModelAdmin):
 
 @admin.register(Lote)
 class LoteAdmin(admin.ModelAdmin):
-    list_display = ('nome', 'fazenda', 'area', 'capacidade_maxima', 'get_animal_count', 'is_active')
+    list_display = ('nome', 'fazenda', 'capacidade_maxima', 'get_animal_count', 'is_active')
     list_filter = ('fazenda', 'is_active')
     search_fields = ('nome', 'fazenda__nome')
     date_hierarchy = 'data_de_cadastro'

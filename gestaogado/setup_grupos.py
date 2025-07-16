@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# pyright: reportAttributeAccessIssue=false
 """
 Script para configurar grupos de usuários no sistema
 Execute: python manage.py shell < setup_grupos.py

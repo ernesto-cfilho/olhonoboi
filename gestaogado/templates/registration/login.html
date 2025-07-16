@@ -123,5 +123,24 @@
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- CSRF Error Handler -->
+    <script>
+        // Verificar se há erro de CSRF na URL
+        if (window.location.search.includes('csrf')) {
+            // Recarregar a página para obter um novo token CSRF
+            window.location.reload();
+        }
+        
+        // Adicionar listener para erros de formulário
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.querySelector('form');
+            form.addEventListener('submit', function(e) {
+                // Limpar qualquer erro anterior
+                const alerts = document.querySelectorAll('.alert');
+                alerts.forEach(alert => alert.remove());
+            });
+        });
+    </script>
 </body>
 </html>

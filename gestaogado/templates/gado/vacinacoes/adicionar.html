@@ -37,6 +37,22 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="mb-3">
+                                <label for="lote" class="form-label">
+                                    <i class="fas fa-th-large me-2"></i>Lote (opcional)
+                                </label>
+                                <select class="form-control form-control-lg" id="lote" name="lote">
+                                    <option value="">Selecione um lote para vacinação em grupo</option>
+                                    {% for lote in lotes %}
+                                    <option value="{{ lote.id }}">{{ lote.nome }} - {{ lote.fazenda.nome }}</option>
+                                    {% endfor %}
+                                </select>
+                                <small class="form-text text-muted">
+                                    Selecione um lote para vacinar todos os animais do lote de uma vez.
+                                </small>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
                                 <label for="animal" class="form-label">
                                     <i class="fas fa-cow me-2"></i>Animal
                                 </label>
@@ -53,6 +69,9 @@
                                 </small>
                             </div>
                         </div>
+                    </div>
+                    
+                    <div class="row">
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label for="vacina" class="form-label">
